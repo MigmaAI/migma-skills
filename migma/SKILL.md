@@ -1,6 +1,6 @@
 ---
 name: migma
-description: Generate, send, validate, and export AI-powered emails from the terminal using the Migma CLI. Use when creating email campaigns, importing brands, managing contacts/tags/segments, validating email HTML, exporting to Klaviyo/Mailchimp/HubSpot, or managing sending domains and webhooks.
+description: Give your AI agent its own email design studio. Use when the user wants to create professional on-brand emails, send emails to people or audiences, validate email HTML, export to Klaviyo/Mailchimp/HubSpot, or manage contacts and sending domains. Powered by Migma's AI email engine.
 metadata:
   openclaw:
     requires:
@@ -17,188 +17,122 @@ metadata:
         bins: [migma]
 ---
 
-# Migma CLI
+# Migma
 
-AI-powered email generation, validation, sending, and export — all from the terminal.
+Create and send professional, on-brand emails with AI. Your agent can design emails from a prompt, send them instantly through a managed domain, and manage an entire audience — all from the terminal.
 
-All commands support `--json` for machine-readable output. Always use `--json` when parsing results.
+Always pass `--json` for structured output.
 
-## Setup
+## First-time setup
+
+If the user hasn't set up yet, run these steps once:
 
 ```bash
-# Install
-npm install -g @migma/cli
+# 1. Create an instant sending domain (no DNS needed)
+migma domains managed create <companyname> --json
+# → Sends from: hello@<companyname>.migma.email
 
-# Authenticate (interactive)
-migma login
-
-# Or use environment variable
-export MIGMA_API_KEY=sk_live_...
-
-# Set default project
+# 2. Set a default project (brand)
 migma projects list --json
 migma projects use <projectId>
 ```
 
-## Generate Emails
+## Create an email
+
+When the user asks to create, design, or generate an email:
 
 ```bash
-# Generate and wait for result
-migma generate "Summer sale — 30% off everything" --wait --json
-
-# Save HTML locally
-migma generate "Welcome email for new users" --wait --save ./email.html --json
-
-# With reference image
-migma generate "Recreate this design" --wait --image https://example.com/ref.png --json
-
-# Fire-and-forget (returns conversationId)
-migma generate "Product launch announcement" --json
-
-# Check status
-migma generate status <conversationId> --json
+migma generate "Welcome email for new subscribers" --wait --json
 ```
 
-JSON output on `--wait` includes `conversationId`, `subject`, `html`, and `status`.
+The `--wait` flag blocks until the AI finishes. The JSON response includes `conversationId`, `subject`, and `html`.
 
-## Send Emails
+To save the HTML locally, add `--save ./email.html`. To include a reference image (screenshot, design mockup), add `--image <url>`.
+
+## Send an email
+
+When the user asks to send an email to someone:
 
 ```bash
-# Send to individual
-migma send --to user@example.com --subject "Hello" --html ./email.html \
-  --from hello@yourdomain.com --from-name "Brand" --json
-
-# Send from a generated email (auto-exports HTML)
-migma send --to user@example.com --subject "Welcome" \
+# Send a generated email directly
+migma send --to sarah@example.com --subject "Welcome!" \
   --from-conversation <conversationId> \
-  --from hello@yourdomain.com --from-name "Brand" --json
+  --from hello@company.migma.email --from-name "Company" --json
 
-# Send to segment or tag
-migma send --segment <segmentId> --subject "Campaign" --html ./email.html \
-  --from hello@yourdomain.com --from-name "Brand" --json
-migma send --tag <tagId> --subject "Update" --html ./email.html \
-  --from hello@yourdomain.com --from-name "Brand" --json
+# Or send from a local HTML file
+migma send --to sarah@example.com --subject "Hello" \
+  --html ./email.html \
+  --from hello@company.migma.email --from-name "Company" --json
 
-# Template variables (repeatable --var)
+# Send to an entire segment or tag
+migma send --segment <id> --subject "Big News" --html ./email.html \
+  --from hello@company.migma.email --from-name "Company" --json
+
+# Personalize with template variables
 migma send --to user@example.com --subject "Hi {{name}}" --html ./email.html \
-  --from hello@yourdomain.com --from-name "Brand" \
-  --var name=John --var discount=20 --json
-
-# Test email
-migma send test <conversationId> --to test@example.com --json
-
-# Batch status
-migma send batch-status <batchId> --json
+  --from hello@company.migma.email --from-name "Company" \
+  --var name=Sarah --var discount=20 --json
 ```
 
-## Validate Emails
+`--from-conversation` auto-exports the HTML from a generated email — no separate export step.
 
-All accept `--html <file>` or `--conversation <conversationId>`.
+## Validate an email
+
+When the user wants to check an email before sending:
 
 ```bash
-migma validate all --html ./email.html --json           # All checks + overall score
-migma validate compatibility --html ./email.html --json  # Email client compatibility
-migma validate links --html ./email.html --json          # Broken link detection
-migma validate spelling --html ./email.html --json       # AI grammar/spelling
-migma validate deliverability --html ./email.html --json # Spam score
+migma validate all --html ./email.html --json
+migma validate all --conversation <conversationId> --json
 ```
 
-## Export
+Returns an overall score plus individual checks: compatibility (30+ email clients), broken links, spelling/grammar, and deliverability/spam score. Individual checks: `migma validate compatibility`, `links`, `spelling`, `deliverability`.
 
-All support `--output <file>` to save locally.
+## Export to platforms
+
+When the user wants to export to an ESP or download a file:
 
 ```bash
-migma export html <conversationId> --json
 migma export html <conversationId> --output ./email.html
-migma export mjml <conversationId> --json
-migma export pdf <conversationId> --json
-migma export klaviyo <conversationId> --type hybrid --json
+migma export klaviyo <conversationId> --json
 migma export mailchimp <conversationId> --json
 migma export hubspot <conversationId> --json
+migma export pdf <conversationId> --json
+migma export mjml <conversationId> --json
 ```
 
-## Contacts
+## Manage contacts
 
 ```bash
-migma contacts list --json
 migma contacts add --email user@example.com --firstName John --json
-migma contacts get <id> --json
-migma contacts update <id> --firstName Jane --json
+migma contacts list --json
+migma contacts import ./contacts.csv --json
 migma contacts remove <id> --json
-migma contacts import ./contacts.csv --json   # Bulk CSV import
 ```
 
-CSV columns: `email` (required), `firstName`, `lastName`, plus any custom fields.
-
-## Tags
+## Manage tags and segments
 
 ```bash
-migma tags list --json
 migma tags create --name "VIP" --json
-migma tags delete <id> --json
-```
-
-## Segments
-
-```bash
-migma segments list --json
+migma tags list --json
 migma segments create --name "Active Users" --description "..." --json
-migma segments get <id> --json
-migma segments delete <id> --json
+migma segments list --json
 ```
 
-## Projects
+## Import a brand
+
+When the user wants to set up a new brand from their website:
 
 ```bash
-migma projects list --json          # List projects
-migma projects list --all --json    # All pages
-migma projects get <id> --json      # Details
-migma projects import <url> --wait --json  # Import brand
-migma projects use <id>             # Set default
+migma projects import https://yourbrand.com --wait --json
+migma projects use <projectId>
 ```
 
-## Domains
+This fetches logos, colors, fonts, and brand voice automatically.
 
-```bash
-migma domains list --json
-migma domains add example.com --json
-migma domains verify example.com --json
-migma domains managed create myprefix --json    # Instant, no DNS
-migma domains managed delete myprefix.migma.email --json
-```
+## Error handling
 
-## Webhooks
-
-```bash
-migma webhooks list --json
-migma webhooks create --url https://example.com/hook \
-  --events email.generation.completed,email.test.sent --json
-migma webhooks test <id> --json
-migma webhooks delete <id> --json
-```
-
-## Common Workflows
-
-For detailed multi-step workflow examples, see [workflows.md](references/workflows.md).
-
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `MIGMA_API_KEY` | API key (required) |
-| `MIGMA_PROJECT_ID` | Default project ID |
-| `MIGMA_BASE_URL` | Custom API base URL |
-
-## Error Output
-
-On error with `--json`:
+On error, `--json` returns:
 
 ```json
-{
-  "error": {
-    "message": "Not found",
-    "code": "not_found",
-    "statusCode": 404
-  }
-}
+{"error": {"message": "Not found", "code": "not_found", "statusCode": 404}}
 ```
