@@ -1,6 +1,6 @@
 ---
 name: migma
-description: Give your AI agent its own email design studio. Use when the user wants to create professional on-brand emails, send emails to people or audiences, validate email HTML, export to Klaviyo/Mailchimp/HubSpot, or manage contacts and sending domains. Powered by Migma's AI email engine.
+description: Generate, send, validate, and export AI-powered emails from the terminal; manage contacts, segments, tags, domains, and webhooks with Migma CLI.
 metadata:
   openclaw:
     requires:
