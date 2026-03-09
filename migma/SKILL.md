@@ -107,6 +107,45 @@ migma emails list --project <projectId> --search "welcome" --json
 
 Filters: `--limit <n>` (1-100, default 20), `--status <pending|processing|completed|failed>`, `--search <query>`.
 
+## Create and send a campaign
+
+When the user wants to send to a segment or tag with tracking (named campaign, scheduling, status):
+
+```bash
+# 1. List tags or segments to find recipients
+migma tags list --json
+# or: migma segments list --json
+
+# 2. Create a campaign from a generated email
+migma campaigns create --project <projectId> \
+  --name "Investor Update" --conversation <conversationId> \
+  --from hello@company.migma.email --from-name "Company" \
+  --recipient-type tag --recipient-id <tagId> --json
+
+# 3. Send immediately
+migma campaigns send <campaignId> --json
+
+# Or schedule for later
+migma campaigns schedule <campaignId> --at "2026-03-15T14:00:00Z" --timezone "America/New_York" --json
+
+# Cancel a scheduled campaign
+migma campaigns cancel <campaignId> --json
+
+# List campaigns
+migma campaigns list --project <projectId> --json
+migma campaigns list --project <projectId> --status sent --json
+
+# Get campaign details
+migma campaigns get <campaignId> --json
+```
+
+Use campaigns when the user wants to:
+- Send to a segment or tag with a named, trackable send
+- Schedule an email for later
+- Track campaign status (draft → scheduled → sending → sent)
+
+Use `migma send` (below) for quick fire-and-forget sends — transactional emails, test sends, or one-off blasts where lifecycle tracking isn't needed.
+
 ## Send an email
 
 When the user asks to send an email to someone:

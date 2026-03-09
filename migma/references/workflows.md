@@ -178,6 +178,42 @@ migma generate "Same email but fix the broken links and improve spam score" \
   --reference <conversationId> --wait --json
 ```
 
+## "Send my investor update"
+
+Full campaign workflow — generate email, find recipients, create campaign, send:
+
+```bash
+# Generate the email
+migma generate "Monthly investor update — Q1 revenue up 40%, launched campaigns feature" --wait --json
+
+# Find the investors tag
+migma tags list --json
+
+# Create a campaign targeting the investors tag
+migma campaigns create --project <projectId> \
+  --name "March Investor Update" --conversation <conversationId> \
+  --from hello@company.migma.email --from-name "Company" \
+  --recipient-type tag --recipient-id <investorsTagId> --json
+
+# Send it
+migma campaigns send <campaignId> --json
+```
+
+## "Schedule a newsletter for next Tuesday"
+
+```bash
+# Generate the email
+migma generate "Weekly newsletter — product updates and tips" --wait --json
+
+# Create and schedule the campaign
+migma campaigns create --project <projectId> \
+  --name "Weekly Newsletter" --conversation <conversationId> \
+  --from hello@company.migma.email --from-name "Company" \
+  --recipient-type audience --recipient-id <segmentId> --json
+
+migma campaigns schedule <campaignId> --at "2026-03-10T10:00:00Z" --timezone "America/New_York" --json
+```
+
 ## "Track the status of my email send"
 
 ```bash
