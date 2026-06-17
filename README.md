@@ -15,15 +15,29 @@ npx skills add MigmaAI/migma-skills --list
 npx skills add MigmaAI/migma-skills
 ```
 
+Install the CLI and all skills together:
+
+```bash
+curl -fsSL https://install.migma.ai/setup | sh
+```
+
 Install all skills globally with the script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh | sh
+curl -fsSL https://install.migma.ai/skills | sh
 ```
 
-Optional hosted redirect target:
+Install only the CLI:
+
+```bash
+curl -fsSL https://install.migma.ai/cli | sh
+```
+
+Hosted redirect targets:
 
 - `https://install.migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
+- `https://install.migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
+- `https://install.migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
 
 Install one skill:
 
@@ -71,6 +85,9 @@ npx skills add . --list
 
 - `.codex-plugin/`, `.cursor-plugin/`, `.claude-plugin/` - plugin manifests
 - `.agents/plugins/marketplace.json` - Codex marketplace entry
+- `install-cli.sh` - installs the public `@migma/cli` npm package
+- `install.sh` - installs all public Migma skills
+- `setup.sh` - installs CLI plus skills
 - `skills/setup/` - app setup workflow
 - `skills/migma/` - daily Migma CLI workflow
 - `skills/public-api/` - REST, SDK, CLI, and MCP guidance
