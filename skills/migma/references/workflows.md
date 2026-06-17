@@ -7,9 +7,9 @@ Real examples of what users ask and how to handle them.
 ```bash
 # Generate the email
 migma generate "Welcome email for new subscribers" --wait --json
-# Send it
+# Use result.emails[0].emailId from the JSON output, then send it
 migma send --to sarah@example.com --subject "<subject from generate>" \
-  --from-conversation <conversationId> \
+  --email <emailId> \
   --from hello@company.migma.email --from-name "Company" --json
 ```
 
@@ -19,7 +19,7 @@ migma send --to sarah@example.com --subject "<subject from generate>" \
 migma generate "Black Friday sale — 40% off everything, highlight our best sellers" --wait --json
 ```
 
-Show the user the subject line and let them know the email is ready. If they want to preview, add `--save ./bf.html` and tell them where the file is.
+Show the user the subject line, `emailId`, HTML output, and screenshot URL when available. If they want to preview, add `--save ./bf.html` and tell them where the file is.
 
 ## "Send that email to all our VIP customers"
 
@@ -28,7 +28,7 @@ Show the user the subject line and let them know the email is ready. If they wan
 migma tags list --json
 # Send to the tag
 migma send --tag <tagId> --subject "Black Friday: 40% Off" \
-  --from-conversation <conversationId> \
+  --email <emailId> \
   --from hello@company.migma.email --from-name "Company" --json
 ```
 
@@ -57,7 +57,7 @@ migma export klaviyo <conversationId> --json
 
 ```bash
 # Single contact
-migma contacts add --email john@example.com --firstName John --lastName Doe --json
+migma contacts add --email john@example.com --first-name John --last-name Doe --json
 
 # Bulk from CSV
 migma contacts import ./contacts.csv --json
@@ -83,13 +83,22 @@ migma generate "Follow-up email — remind them about the offer" --reference <co
 ## "Make a series of 3 emails for our launch"
 
 ```bash
-# Email 1: The announcement
-migma generate "Product launch announcement — we're live!" --wait --json
-# Email 2: Follow-up (references email 1)
-migma generate "Launch follow-up — key features deep dive" --reference <email1ConversationId> --wait --json
-# Email 3: Last chance (references email 2)
-migma generate "Last chance — launch offer ends tomorrow" --reference <email2ConversationId> --wait --json
+# Generate the connected series in one call
+migma generate "Three-email launch series: announcement, feature deep dive, and last chance" --count 3 --wait --json
+# Use each result.emails[].emailId when the user wants to fetch, edit, test-send, or send one slot.
 ```
+
+## "Update the second email in this series and show me the result"
+
+```bash
+# Pick the second slot's result.emails[].emailId from generation status.
+migma emails edit <emailId> --prompt "Make the second email more concise and add a stronger CTA" --output ./series-2.html --json
+
+# Fetch the same email if the user asks to verify the current saved version.
+migma emails get <emailId> --output ./series-2.html --json
+```
+
+Show the updated subject, HTML file path, and screenshot URL when available.
 
 ## "Create something similar to that welcome email"
 
@@ -110,11 +119,10 @@ migma generate "Product launch announcement — our new feature is live" --wait 
 migma validate all --html ./launch.html --json
 
 # Send test first
-migma send --to test@company.com --subject "Product Launch" --html ./launch.html \
-  --from hello@company.migma.email --from-name "Company" --json
+migma send-test --email <emailId> --to test@company.com --json
 
 # Send to segment
-migma send --segment <segmentId> --subject "Product Launch" --html ./launch.html \
+migma send --segment <segmentId> --subject "Product Launch" --email <emailId> \
   --from hello@company.migma.email --from-name "Company" --json
 ```
 
@@ -152,7 +160,7 @@ migma domains list --json
 
 # Now use it to send
 migma send --to user@example.com --subject "Hello" \
-  --html ./email.html \
+  --email <emailId> \
   --from hello@yourdomain.com --from-name "Company" --json
 ```
 
@@ -191,7 +199,7 @@ migma tags list --json
 
 # Create a campaign targeting the investors tag
 migma campaigns create --project <projectId> \
-  --name "March Investor Update" --conversation <conversationId> \
+  --name "March Investor Update" --conversation <conversationId> --email <emailId> \
   --from hello@company.migma.email --from-name "Company" \
   --recipient-type tag --recipient-id <investorsTagId> --json
 
@@ -207,7 +215,7 @@ migma generate "Weekly newsletter — product updates and tips" --wait --json
 
 # Create and schedule the campaign
 migma campaigns create --project <projectId> \
-  --name "Weekly Newsletter" --conversation <conversationId> \
+  --name "Weekly Newsletter" --conversation <conversationId> --email <emailId> \
   --from hello@company.migma.email --from-name "Company" \
   --recipient-type audience --recipient-id <segmentId> --json
 
@@ -224,5 +232,5 @@ migma generate-status <conversationId> --json
 migma batch-status <batchId> --json
 
 # Send a test before the real send
-migma send-test <conversationId> --to test@company.com --json
+migma send-test --email <emailId> --to test@company.com --json
 ```

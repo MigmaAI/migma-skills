@@ -1,0 +1,21 @@
+{
+  "name": "migma-plugins",
+  "owner": {
+    "name": "Migma",
+    "email": "support@migma.ai"
+  },
+  "interface": {
+    "displayName": "Migma"
+  },
+  "plugins": [
+    {
+      "name": "migma",
+      "source": "./",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

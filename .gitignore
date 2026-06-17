@@ -1,3 +1,10 @@
-skills/
 .clawhub/
+.agents/skills/
+skills-lock.json
 node_modules/
+
+# Local/internal drafts. Do not publish as public installable skills.
+frontend-design/
+infrastructure/
+performance-review/
+sending-audience/

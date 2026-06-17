@@ -1,0 +1,43 @@
+{
+  "name": "migma",
+  "version": "0.1.0",
+  "description": "Create, manage, and send email with Migma from AI coding agents.",
+  "author": {
+    "name": "Migma",
+    "email": "support@migma.ai",
+    "url": "https://migma.ai"
+  },
+  "homepage": "https://migma.ai",
+  "repository": "https://github.com/MigmaAI/migma-skills",
+  "license": "MIT",
+  "keywords": [
+    "migma",
+    "email",
+    "transactional-email",
+    "campaigns",
+    "deliverability",
+    "mcp",
+    "cli"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Migma",
+    "shortDescription": "Email creation and sending for AI agents.",
+    "longDescription": "Use Migma skills to set up app email sending, create and edit emails, work with the public API, use the CLI, and connect MCP clients.",
+    "developerName": "Migma",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "Email",
+      "Developer Tools"
+    ],
+    "websiteURL": "https://migma.ai",
+    "brandColor": "#1A1A1A",
+    "logo": "./assets/logo-square.svg",
+    "defaultPrompt": [
+      "Set up Migma in this app.",
+      "Create a transactional email with Migma.",
+      "Wire this selected Migma email into my backend."
+    ]
+  }
+}
