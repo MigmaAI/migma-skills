@@ -18,26 +18,26 @@ npx skills add MigmaAI/migma-skills
 Install the CLI and all skills together:
 
 ```bash
-curl -fsSL https://install.migma.ai/setup | sh
+curl -fsSL https://migma.ai/setup | sh
 ```
 
 Install all skills globally with the script:
 
 ```bash
-curl -fsSL https://install.migma.ai/skills | sh
+curl -fsSL https://migma.ai/skills | sh
 ```
 
 Install only the CLI:
 
 ```bash
-curl -fsSL https://install.migma.ai/cli | sh
+curl -fsSL https://migma.ai/cli | sh
 ```
 
 Hosted redirect targets:
 
-- `https://install.migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
-- `https://install.migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
-- `https://install.migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
+- `https://migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
+- `https://migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
+- `https://migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
 
 Install one skill:
 
