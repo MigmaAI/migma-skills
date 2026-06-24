@@ -13,7 +13,7 @@ Official sources:
 - API reference: https://docs.migma.ai/api-reference/introduction
 - SDK: https://docs.migma.ai/sdk
 - CLI: https://docs.migma.ai/cli
-- MCP server: https://docs.migma.ai/mcp
+- MCP server: https://docs.migma.ai/mcp-server
 
 ## Choose the Surface
 

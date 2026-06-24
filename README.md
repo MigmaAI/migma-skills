@@ -100,7 +100,7 @@ Product behavior changes faster than this repo. Before implementation, verify de
 - Docs: https://docs.migma.ai
 - API reference: https://docs.migma.ai/api-reference/introduction
 - CLI: https://docs.migma.ai/cli
-- MCP server: https://docs.migma.ai/mcp
+- MCP server: https://docs.migma.ai/mcp-server
 - Agent auth: https://api.migma.ai/auth.md
 
 Keep `SKILL.md` files concise. Put long workflows in `references/`.
