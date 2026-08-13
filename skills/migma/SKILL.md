@@ -27,7 +27,9 @@ If the user wants to install Migma into an existing app, audit current email tri
 
 ## Live presence
 
-Migma shows your activity live in the user's dashboard while you work, so announce yourself before anything else. The CLI and SDK identify you automatically. When calling the REST API directly, send `X-Agent-Id: ai:<your-name>` (for example `ai:claude-code`) on every request, and show up before your first work call:
+Migma can show your activity live in the user's dashboard while you work. The CLI and SDK identify you automatically. When calling the REST API directly, send `X-Agent-Id: ai:<your-name>` (for example `ai:claude-code`) on every request.
+
+Use the explicit presence endpoint only when you already have a valid `conversationId` and a key with `email:read`:
 
 ```bash
 curl -X POST https://api.migma.ai/v1/agent/presence \
@@ -37,9 +39,9 @@ curl -X POST https://api.migma.ai/v1/agent/presence \
   -d '{"conversationId": "<conversationId>", "status": "connected", "goal": "Recreating the 5 transactional emails this app sends"}'
 ```
 
-`status` accepts `connected`, `disconnected`, `reading`, `creating`, `editing`, and `sending`. Work calls (generate, edit, send) broadcast presence on their own, so this endpoint is for the initial hello, goal updates, and an optional goodbye.
+`status` accepts `connected`, `disconnected`, `reading`, `creating`, `editing`, and `sending`. Work calls (generate, edit, send) broadcast presence on their own, so skip the manual ping when you do not have a conversation yet.
 
-Always include a `goal`: one sentence, in plain language, stating what you are trying to achieve for the user. The dashboard shows it next to your name. Update it when your mission changes, and announce the outcome when you finish (e.g. `{"status": "disconnected", "goal": "Done: 5 transactional emails recreated and wired up"}`).
+When you call the endpoint, include a `goal`: one sentence, in plain language, stating what you are trying to achieve for the user. The dashboard shows it next to your name. Update it when your mission changes, and announce the outcome when you finish (e.g. `{"status": "disconnected", "goal": "Done: 5 transactional emails recreated and wired up"}`).
 
 ## Prompts come from the code, not from Migma
 
@@ -78,11 +80,28 @@ migma projects use <projectId>
 migma domains managed create <companyname> --json
 ```
 
-Use a managed domain when the user wants to send without DNS work, for example `hello@company.migma.email`.
+`migma login` opens a browser for OAuth and stores the key. Headless: `migma login --claim`. CI: `MIGMA_API_KEY`.
 
 ### No API key yet
 
-If `MIGMA_API_KEY` is not set, register yourself instead of sending the user to dig a key out of settings. Fetch `https://api.migma.ai/auth.md` and follow it: register your intent with the user's email and your agent name, surface the one-time code and approval link to the user, poll the token endpoint until they approve, then use the returned key as `MIGMA_API_KEY`. Request only the scopes you need.
+1. Hosted MCP available → connect `https://migma.ai/mcp` (browser OAuth). Do not ask for a pasted key.
+2. Else run `migma login`.
+3. Else fetch `https://api.migma.ai/auth.md` and follow the claim-code flow: register with the user's email and your agent name, show the approval link, poll until approved, then use the returned key. For this `migma` workflow, request only the scopes needed. For app setup, use `setup`; it requests broad non-send scopes.
+4. Never send the user to Settings → API Keys except CI/server automation.
+
+Use a managed domain when the user wants to send without DNS work, for example `hello@company.migma.email`.
+
+For a domain the user owns, isolate transactional reputation from marketing by provisioning a stream:
+
+```bash
+# notify.<domain> for transactional, send.<domain> for marketing
+migma domains streams create <rootDomain> --stream transactional --json
+
+# both streams in one call (send. marketing + notify. transactional)
+migma domains setup <rootDomain> --json
+```
+
+Provision a transactional stream before sending password resets, receipts, or codes. Without one, transactional mail falls back to the marketing identity and shares its reputation.
 
 ## Create emails
 
@@ -129,6 +148,18 @@ migma send --segment <segmentId> --subject "Product update" \
 
 Use `migma send` for quick transactional emails, tests, and simple blasts. The CLI chooses the send path from recipient type and Migma settings; do not add unsupported flags.
 
+### Safe retries
+
+Pass `--idempotency-key <key>` on the write commands that are costly to repeat — `send`, `campaigns send`, `campaigns schedule`, `campaigns create`, `contacts add`, and `contacts import` — so a retry after a network error does not act twice. Use a stable key derived from the operation, never a random value:
+
+```bash
+migma campaigns send <campaignId> --idempotency-key "campaign-send-<campaignId>" --json
+migma contacts add --email user@example.com --idempotency-key "contact-user@example.com" --json
+migma contacts import ./contacts.csv --idempotency-key "contacts-import-2026-06-28" --json
+```
+
+Within 24 hours, the same key with the same request replays the original response; a different request with the same key is rejected. The key is at most 100 characters.
+
 ## Marketing campaigns
 
 Use campaigns when the user wants a named marketing send with scheduling, recipient counts, and status tracking.
@@ -150,10 +181,20 @@ migma campaigns get <campaignId> --json
 
 For a series campaign, always pass the selected email's `emailId` with `--email`.
 
+After a campaign sends, read its performance:
+
+```bash
+migma campaigns stats <campaignId> --json
+migma campaigns logs <campaignId> --status opened --limit 50 --json
+migma campaigns logs <campaignId> --cursor <nextCursor> --json
+```
+
+`stats` returns aggregate counts and rates (delivered, unique opens, clicks, unsubscribes, bounces); the numbers come from the tracking worker and can be slightly stale. `logs` returns per-recipient rows newest first, cursor-paginated; `--status` accepts `delivered`, `opened`, `clicked`, `bounced`, or `spam_report`.
+
 ## Audience
 
 ```bash
-migma contacts add --email user@example.com --first-name Sarah --last-name Chen --json
+migma contacts add --email user@example.com --first-name Sarah --last-name Chen --status subscribed --json
 migma contacts import ./contacts.csv --json
 migma contacts list --json
 
@@ -162,6 +203,7 @@ migma tags list --json
 
 migma segments create --name "Active customers" --status subscribed --json
 migma segments create --name "VIP customers" --tags <tagId> --json
+migma segments create --name "Campaign openers" --filters '{"activity":[{"action":"opened","channel":"email","mode":"within","unit":"days","amount":14,"campaignId":"<campaignId>"}]}' --json
 migma segments list --json
 ```
 
@@ -176,6 +218,12 @@ migma export klaviyo <conversationId> --type html --json
 migma export mailchimp <conversationId> --json
 migma export hubspot <conversationId> --json
 ```
+
+## Using the MCP server
+
+If you are connected through the Migma MCP server instead of the CLI, call `migma_get_capabilities` first. It returns a single catalog — every tool with its domain and whether it writes, the idempotency contract, brand-scoping rules, and the guided workflows — so you can self-discover the surface before acting. Pass `idempotency_key` on the write tools (`migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`) for safe retries, and use `migma_get_campaign_stats` / `migma_get_campaign_logs` to read campaign performance.
+
+The server also registers guided prompts that walk you through a full flow as an ordered sequence of tool calls: `launch_email_campaign`, `build_segment_and_send`, and `import_brand_and_generate`.
 
 ## Choose the path
 
