@@ -68,7 +68,7 @@ The status result returns `result.emails[]`, one entry per email in series order
 
 ## Own the result
 
-You are responsible for the outcome, not just the API calls. After a generation completes, fetch the result (the status endpoint returns html and screenshots), check it against your goal — right emails, correct variables, on-brand, working CTAs — and request edits until it passes. Only report the goal achieved after you verified the output yourself.
+You are responsible for the outcome, not just the API calls. After a generation completes, fetch the result (the status endpoint returns html and screenshots). If you are on MCP, list/get/status return preview images — show those to the user instead of only describing JSON. Check the result against your goal — right emails, correct variables, on-brand, working CTAs — and request edits until it passes. Only report the goal achieved after you verified the output yourself.
 
 ## Login and setup
 
