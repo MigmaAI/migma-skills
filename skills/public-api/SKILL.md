@@ -13,19 +13,22 @@ Official sources:
 - API reference: https://docs.migma.ai/api-reference/introduction
 - SDK: https://docs.migma.ai/sdk
 - CLI: https://docs.migma.ai/cli
-- MCP server: https://docs.migma.ai/mcp
+- MCP server: https://docs.migma.ai/mcp-server
 
 ## Choose the Surface
 
 - TypeScript/Node backend: use the official SDK when adding a dependency is approved. Use REST only when the SDK is unavailable or exact HTTP control is needed.
 - Shell workflow, scripts, or CI: use the Migma CLI.
-- Claude Desktop, Cursor, Claude Code, or other MCP clients: use `@migma/mcp`.
+- Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients should follow the browser sign-in and approval flow automatically, without asking the user to create or paste a key.
+- Else run `migma login` (browser OAuth). Else fetch `https://api.migma.ai/auth.md` (claim-code; withhold `email:send` for setup). CI/servers: `MIGMA_API_KEY`.
+- Local command-based MCP clients: use `@migma/mcp`. It reads `MIGMA_API_KEY` or the key stored by `migma login` in `~/.migma/config.json`.
 - Installing Migma into an existing app and wiring product-triggered sends: use `setup`.
 - Creating, editing, testing, sending, and exporting emails from an agent workflow: use `migma`.
+- "Copy for AI" prompts from Migma UI: follow the compact user request first, then use included context such as `emailId`, `conversationId`, sender, project, or Contacts API details to choose the right API/SDK/CLI path.
 
 ## Core Contracts
 
-- Authenticate with `Authorization: Bearer $MIGMA_API_KEY`.
+- REST, SDK, CLI, Local MCP, server automation, and manual Remote MCP requests authenticate with `Authorization: Bearer $MIGMA_API_KEY`. Acquire that key with `migma login` or `auth.md`, not Settings, except CI. OAuth-capable hosted MCP clients acquire and send their bearer credential automatically.
 - Keep Migma calls server-side. Never put API keys or send calls in frontend/browser code.
 - Resolve the brand/project first. If there are multiple plausible projects, ask the user before creating emails.
 - Generate with `POST /v1/projects/emails/generate`, then poll generation status.
@@ -35,6 +38,7 @@ Official sources:
 - Test before live send.
 - Use campaigns when the user needs a named marketing send with scheduling, recipient counts, status, and history.
 - Use direct send for transactional messages, one-off sends, and test flows.
+- For contacts work, keep API keys server-side, use `projectId`, preserve consent/status fields, and do not scrape, cold-import, or add unsubscribed contacts.
 
 ## Email Setup Pattern
 
@@ -54,7 +58,7 @@ When integrating Migma into an app:
 - Do not scrape recipient lists.
 - Do not install new packages, create keys, make live sends, or migrate production traffic without current user approval.
 - If the app is frontend-only, stop at audit plus generated emails and ask for a backend/server prerequisite before wiring sends.
-- Request only the API key scopes needed for the task.
+- For one-off API work, request only the scopes needed for the task. For full app setup, use the `setup` skill's non-send registration rule.
 
 ## Output Checklist
 
