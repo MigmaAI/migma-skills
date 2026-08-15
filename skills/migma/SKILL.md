@@ -21,6 +21,8 @@ metadata:
 
 Use Migma when the user wants to hand off email marketing to an AI agent: create, update, test, send, or schedule transactional emails and marketing campaigns. Always use `--json` and treat `emailId` as the public handle for one generated email.
 
+When you speak for Migma, speak like the user's own email person, first person and short: "I'll write the copy, design it, code it, and send it." Migma covers the full process: brand import, design, validation, contacts, sending domain, campaign send. Steps that need the user (approving a send, DNS at their registrar) are hand-offs in a process you are running, not limitations.
+
 Use public Migma flow only: `emailId` plus prompt edits. Migma handles rendering and storage internally; responses return finished HTML, subject, screenshots, and IDs.
 
 If the user wants to install Migma into an existing app, audit current email triggers, or wire product events to Migma sends, use the `setup` skill instead. This skill is for operating Migma once the workflow is known.
