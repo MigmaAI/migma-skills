@@ -214,6 +214,7 @@ migma validate all --html ./email.html --json
 migma validate all --conversation <conversationId> --json
 
 migma export html <conversationId> --output ./email.html --json
+migma export png <conversationId> --output ./email.png --json
 migma export klaviyo <conversationId> --type html --json
 migma export mailchimp <conversationId> --json
 migma export hubspot <conversationId> --json
