@@ -20,6 +20,7 @@
     "cli"
   ],
   "skills": "./skills/",
+  "apps": "./.app.json",
   "interface": {
     "displayName": "Migma",
     "shortDescription": "Email creation and sending for AI agents.",
@@ -32,12 +33,14 @@
       "Developer Tools"
     ],
     "websiteURL": "https://migma.ai",
+    "privacyPolicyURL": "https://docs.migma.ai/legal/privacy-policy",
+    "termsOfServiceURL": "https://docs.migma.ai/legal/terms-of-use",
     "brandColor": "#1A1A1A",
     "logo": "./assets/logo-square.svg",
     "defaultPrompt": [
-      "Set up Migma in this app.",
-      "Create a transactional email with Migma.",
-      "Wire this selected Migma email into my backend."
+      "List my Migma brands. Do not create, export, or send anything.",
+      "Show recent email designs for this brand and open the newest preview.",
+      "Validate this email for compatibility and deliverability. Do not change it."
     ]
   }
 }
