@@ -10,6 +10,14 @@ Official installable Migma skills and plugin for AI coding agents.
 
 ## Install
 
+One prompt sets up skills, CLI, and MCP in any AI coding agent. Paste into your agent:
+
+```text
+Fetch and execute the appropriate instructions to set me up for Migma from https://docs.migma.ai/agent-setup.md
+```
+
+Or install manually:
+
 ```bash
 npx skills add MigmaAI/migma-skills --list
 npx skills add MigmaAI/migma-skills
@@ -18,26 +26,26 @@ npx skills add MigmaAI/migma-skills
 Install the CLI and all skills together:
 
 ```bash
-curl -fsSL https://migma.ai/setup | sh
+curl -fsSL https://install.migma.ai/setup | sh
 ```
 
 Install all skills globally with the script:
 
 ```bash
-curl -fsSL https://migma.ai/skills | sh
+curl -fsSL https://install.migma.ai/skills | sh
 ```
 
 Install only the CLI:
 
 ```bash
-curl -fsSL https://migma.ai/cli | sh
+curl -fsSL https://install.migma.ai/cli | sh
 ```
 
 Hosted redirect targets:
 
-- `https://migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
-- `https://migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
-- `https://migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
+- `https://install.migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
+- `https://install.migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
+- `https://install.migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
 
 Install one skill:
 
