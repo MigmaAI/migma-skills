@@ -56,6 +56,10 @@ codex plugin marketplace add MigmaAI/migma-skills
 codex plugin add migma@migma-plugins
 ```
 
+### ChatGPT
+
+Public Plugin Directory distribution uses Migma's hosted MCP service plus these skills. Submission materials live in [`submission/openai-plugin.md`](submission/openai-plugin.md). Until OpenAI approves the public listing, connect `https://migma.ai/mcp` through ChatGPT developer mode or a workspace custom MCP connection and complete browser OAuth.
+
 ### Cursor
 
 Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then install Migma.
