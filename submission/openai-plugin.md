@@ -20,7 +20,7 @@ Do not submit `migma-chatgpt-app/`. That prototype is not the production hosted 
 - Long description: Connect Migma to prepare branded transactional and marketing emails, review existing designs, run email checks, manage contacts and campaigns, export finished work, and send only with the permissions and approvals you grant.
 - Developer: Migma
 - Website: `https://migma.ai`
-- Support: `https://migma.ai/support`
+- Support: `https://migma.ai/contact`
 - Privacy: `https://docs.migma.ai/legal/privacy-policy`
 - Terms: `https://docs.migma.ai/legal/terms-of-use`
 - Logo source: `assets/logo-square.svg`
