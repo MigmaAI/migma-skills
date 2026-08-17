@@ -44,7 +44,7 @@ Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_b
 | Job | Tools |
 |---|---|
 | Brands | `migma_list_projects`, `migma_get_project`, `migma_import_brand` |
-| Knowledge | `migma_list_knowledge_base`, `migma_add_knowledge_base` — save lasting brand facts for better future emails |
+| Knowledge | `migma_add_knowledge_base` — save lasting brand facts (no list-first). `migma_list_knowledge_base` only to review. |
 | Create / poll | `migma_generate_email`, `migma_get_generation_status`, `migma_list_emails` |
 | Fetch / edit | `migma_get_email`, `migma_edit_email` |
 | Test / send | `migma_send_test_email`, `migma_send_email` — ask before live send |
@@ -65,7 +65,7 @@ When the user asks to design / create emails:
 
 Do **not** auto-run compatibility/deliverability/spam checks after every generate. Those tools are for when the user asks, or as a last step before send.
 
-When the user shares lasting brand facts (tone, products, offers, policies, audience, FAQ), call `migma_add_knowledge_base` so later generations improve. Do not wait for them to say “save this.”
+When the user shares lasting brand facts (tone, products, offers, policies, audience, FAQ), call `migma_add_knowledge_base` once. Do not list first.
 
 MCP status/list/get/edit already return image blocks — show those pictures in the chat. Prefer the tool images over inventing markdown. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Do not request HTML unless needed. Ask before any send that reaches real inboxes.
 
