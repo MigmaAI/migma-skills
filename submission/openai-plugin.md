@@ -98,6 +98,7 @@ Initial public submission. Includes scoped browser OAuth, Migma email and campai
 - [ ] OpenAI project uses global data residency.
 - [ ] Reviewer demo account has sample brands, emails, contacts, and campaigns; no inaccessible 2FA step.
 - [ ] Production MCP scan passes with every tool showing correct `readOnlyHint`, `openWorldHint`, and `destructiveHint`.
+- [ ] After Scan Tools, paste annotation justifications for every tool from `submission/chatgpt-tool-annotation-justifications.md` (OpenAI requires these in the portal; they are **not** imported from MCP).
 - [ ] OAuth consent grants exactly requested scopes.
 - [ ] Privacy text receives human legal review.
 - [ ] Domain challenge token is served alone from `/.well-known/openai-apps-challenge`.
