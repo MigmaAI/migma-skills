@@ -49,7 +49,7 @@ Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_b
 | Fetch / edit | `migma_get_email`, `migma_edit_email` |
 | Test / send | `migma_send_test_email`, `migma_send_email` — ask before live send |
 | Campaigns | `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_get_campaign_stats`, `migma_get_campaign_logs` |
-| Audience | `migma_list_contacts`, `migma_add_contact`, `migma_list_tags`, `migma_list_segments`, … |
+| Audience | `migma_create_contact_import` (CSV), `migma_list_contacts`, `migma_add_contact`, `migma_list_tags`, `migma_list_segments`, … |
 | Export | `migma_export_html`, `migma_export_png`, `migma_export_klaviyo`, `migma_export_mailchimp`, `migma_export_hubspot` |
 | Validate (only if asked, or right before send) | `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` (prefer `emailId`) |
 
@@ -66,6 +66,14 @@ When the user asks to design / create emails:
 Do **not** auto-run compatibility/deliverability/spam checks after every generate. Those tools are for when the user asks, or as a last step before send.
 
 When the user shares lasting brand facts (tone, products, offers, policies, audience, FAQ), call `migma_add_knowledge_base` once. Do not list first.
+
+## CSV → audience (one tool)
+
+When the user uploads or pastes a contact CSV:
+
+1. Resolve `projectId`.
+2. Call `migma_create_contact_import` once with `csvContent` (full CSV text + header), optional `tag` / `tags` for the list name. Leave `columnMap` empty unless headers are unusual.
+3. Report the returned counts. Do not spreadsheet-validate first, do not convert rows to JSON for `migma_bulk_import_contacts`, do not use `csvPath` on hosted ChatGPT.
 
 MCP status/list/get/edit already return image blocks — show those pictures in the chat. Prefer the tool images over inventing markdown. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Do not request HTML unless needed. Ask before any send that reaches real inboxes.
 
