@@ -1,6 +1,6 @@
 ---
 name: migma
-description: "Create, edit, test, validate, and send branded transactional emails and marketing campaigns with Migma. Prefer hosted MCP OAuth at https://migma.ai/mcp — no API key paste."
+description: "Design branded emails, send campaigns to an audience, and read campaign stats with Migma. Prefer hosted MCP OAuth at https://migma.ai/mcp — no API key paste."
 metadata:
   openclaw:
     requires:
@@ -46,17 +46,29 @@ Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_b
 | Brands | `migma_list_projects`, `migma_get_project`, `migma_import_brand` |
 | Create / poll | `migma_generate_email`, `migma_get_generation_status`, `migma_list_emails` |
 | Fetch / edit | `migma_get_email`, `migma_edit_email` |
-| Validate | `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` (prefer `emailId`) |
 | Test / send | `migma_send_test_email`, `migma_send_email` — ask before live send |
 | Campaigns | `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_get_campaign_stats`, `migma_get_campaign_logs` |
 | Audience | `migma_list_contacts`, `migma_add_contact`, `migma_list_tags`, `migma_list_segments`, … |
 | Export | `migma_export_html`, `migma_export_png`, `migma_export_klaviyo`, `migma_export_mailchimp`, `migma_export_hubspot` |
+| Validate (only if asked, or right before send) | `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` (prefer `emailId`) |
 
-On MCP, list/get/status return preview images and an `appUrl` — show pictures and the canvas link. Do not request HTML unless you need markup. Validate with `emailId`, not raw HTML. Ask before any send that reaches real inboxes.
+## Show drafts fast
 
-## Own the result
+When the user asks to design / create emails:
 
-You are responsible for the outcome, not just tool calls. After generation, poll status, show previews, check variables/CTAs/brand, and edit until it passes. Only report done after you verified the output.
+1. Resolve brand (`migma_list_projects` / `migma_get_project`). Skip field catalog unless variables are needed.
+2. `migma_generate_email` with clear distinct concepts in the prompt (and `count` for a series).
+3. Poll `migma_get_generation_status` until ready.
+4. **Stop and show.** Put the preview images and each `appUrl` in your reply immediately. Do not run validate / edit / re-poll first.
+5. Only then offer: “Want me to tighten copy, run inbox checks, or turn one into a campaign?”
+
+Do **not** auto-run compatibility/deliverability/spam checks after every generate. Those tools are for when the user asks, or as a last step before send.
+
+MCP status/list/get/edit already return image blocks — show those pictures in the chat. Prefer the tool images over inventing markdown. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Do not request HTML unless needed. Ask before any send that reaches real inboxes.
+
+## Own the result (without delaying the first look)
+
+You still own quality — but **first show, then improve**. After the user has seen the drafts, fix only what they ask for (or clear broken links / wrong brand). Do not silently edit for CSS or wording nitpicks before the first reveal.
 
 ## Prompts come from the code, not from Migma
 
