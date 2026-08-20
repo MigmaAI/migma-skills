@@ -54,6 +54,7 @@ Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_b
 | Validate (only if asked, or right before send) | `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` (prefer `emailId`) |
 | Plan / credits | `migma_get_credits`, `migma_get_upgrade_link` |
 | Buy a domain | `migma_search_buyable_domains`, `migma_buy_domain`, `migma_get_domain_purchases` |
+| DNS on bought domains | `migma_list_dns_records`, `migma_add_dns_record`, `migma_remove_dns_record` |
 
 ## Show drafts fast
 
@@ -83,6 +84,7 @@ MCP status/list/get/edit already return image blocks — show those pictures in 
 
 - When a generate/edit/send fails with a credit or plan error: call `migma_get_credits`, tell the user where they stand, then offer `migma_get_upgrade_link` and show the returned URL. The user pays in their browser; never try to pay for them. Omit `plan` for existing subscribers (billing portal); ask before picking a plan for new subscribers.
 - To buy a domain: `migma_search_buyable_domains` for names and yearly prices, then `migma_buy_domain` and show the `checkoutUrl`. Buying needs a paid Migma plan — on that error, offer the upgrade link first. After the user pays, poll `migma_get_domain_purchases` until the domain is `active`, then run `migma_setup_domain` so it can send.
+- DNS on bought domains: Migma hosts the zone and sets up all email sending records automatically — never add them yourself. For everything else (Google Workspace MX, site-verification TXT, pointing a subdomain at a server) use `migma_add_dns_record`; review with `migma_list_dns_records`, undo with `migma_remove_dns_record` (confirm first — removing a record breaks whatever used it). The root and `www` are reserved for domain forwarding, and Migma's sending records can't be overridden.
 
 ## Own the result (without delaying the first look)
 
