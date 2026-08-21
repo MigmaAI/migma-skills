@@ -2,7 +2,7 @@
   "name": "migma",
   "displayName": "Migma",
   "description": "Create, manage, and send email with Migma from AI coding agents.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Migma",
     "email": "support@migma.ai"
@@ -12,6 +12,7 @@
   "license": "MIT",
   "logo": "assets/logo-square.svg",
   "skills": "./skills/",
+  "mcpServers": "./mcp.json",
   "keywords": [
     "migma",
     "email",
