@@ -66,7 +66,9 @@ codex plugin add migma@migma-plugins
 
 ### ChatGPT
 
-Public Plugin Directory distribution uses Migma's hosted MCP service plus these skills. Submission materials live in [`submission/openai-plugin.md`](submission/openai-plugin.md). Until OpenAI approves the public listing, connect `https://migma.ai/mcp` through ChatGPT developer mode or a workspace custom MCP connection and complete browser OAuth.
+Migma is available in ChatGPT's public Plugin Directory. Open **Plugins**, search for **Migma**, then select **Connect** or **Try now**. Invoke it with `@Migma` and complete browser OAuth when prompted.
+
+Visual setup: [Connect Migma to ChatGPT](https://docs.migma.ai/tutorials/connect-migma-to-chatgpt). Workspaces that manage their own connector can still add `https://migma.ai/mcp` through custom MCP.
 
 ### Cursor
 
