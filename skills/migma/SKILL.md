@@ -33,7 +33,7 @@ Do **not** ask the user to create or paste an API key from Settings.
 3. **Headless / claim-code** — only when no browser OAuth: fetch `https://api.migma.ai/auth.md`. For this skill, request only the scopes needed. For app setup, use `setup` (broad non-send scopes).
 4. **CI / servers only** — set `MIGMA_API_KEY`. Never send interactive users to Settings → API Keys.
 
-After MCP connects, call `migma_get_capabilities` first. It returns every tool, write vs read, idempotency rules, brand scoping, and guided workflows.
+After MCP connects, call `migma_get_capabilities` first. It returns every tool, write vs read, idempotency rules, brand scoping, and guided workflows. New emails are `migma_generate_email` (title Create / Generate Email) — load it by exact name; do not use Create Campaign or DNS tools for design.
 
 Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
