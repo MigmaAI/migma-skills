@@ -33,7 +33,7 @@ Do **not** ask the user to create or paste an API key from Settings.
 3. **Headless / claim-code** — only when no browser OAuth: fetch `https://api.migma.ai/auth.md`. For this skill, request only the scopes needed. For app setup, use `setup` (broad non-send scopes).
 4. **CI / servers only** — set `MIGMA_API_KEY`. Never send interactive users to Settings → API Keys.
 
-After MCP connects, call `migma_get_capabilities` first. It returns every tool, write vs read, idempotency rules, brand scoping, and guided workflows. New emails are `migma_generate_email` (title Create / Generate Email) — load it by exact name; do not use Create Campaign or DNS tools for design.
+After MCP connects, call `migma_get_capabilities` first. It returns every tool, write vs read, idempotency rules, brand scoping, and guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email.
 
 Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
@@ -61,7 +61,7 @@ Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_b
 When the user asks to design / create emails:
 
 1. Resolve brand (`migma_list_projects` / `migma_get_project`). Skip field catalog unless variables are needed.
-2. `migma_generate_email` with clear distinct concepts in the prompt (and `count` for a series).
+2. `migma_generate_email` once. Name each email's job in the prompt and pass `count` for a series (e.g. `count: 3`). Do not call generate once per email.
 3. Poll `migma_get_generation_status` until ready.
 4. **Stop and show.** Put the preview images and each `appUrl` in your reply immediately. Do not run validate / edit / re-poll first.
 5. Only then offer: “Want me to tighten copy, run inbox checks, or turn one into a campaign?”
