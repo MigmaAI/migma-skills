@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "migma": {
+      "type": "http",
+      "url": "https://migma.ai/mcp"
+    }
+  }
+}

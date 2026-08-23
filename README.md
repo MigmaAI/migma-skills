@@ -74,6 +74,44 @@ Visual setup: [Connect Migma to ChatGPT](https://docs.migma.ai/tutorials/connect
 
 Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then install Migma.
 
+### Grok
+
+Migma bundles its hosted MCP server and Grok operating guidance. In Grok Bot desktop, paste:
+
+```text
+Read https://docs.migma.ai/agents/mcp-grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Check for an existing connection first. Ask before adding it. Do not open or operate the Migma website for normal work. Do not ask for a Settings API key. Stop for my browser approval, then verify by listing my Migma brands read-only.
+```
+
+After connection, Grok Bot uses Migma tools directly. Browser use is only for human sign-in/access approval or explicit browser fallback.
+
+Migma is not verified as a live Grok Bot Marketplace listing. Agent-guided Remote MCP setup is beta. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
+
+For Grok web, open `https://grok.com/connectors`, choose **New Connector → Custom**, and add `https://migma.ai/mcp`.
+
+For Grok Build, add Migma from CLI:
+
+```bash
+grok mcp add --transport http migma https://migma.ai/mcp
+```
+
+Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only when the client can keep returned credentials out of chat, logs, shell history, and shared files; claim-code does not repair connector OAuth state.
+
+Verify with:
+
+```bash
+grok mcp doctor migma
+```
+
+Start read-only:
+
+```text
+Use Migma to list my brands. Do not create, export, schedule, or send anything.
+```
+
+Keep live sends, schedules, audience changes, and publishing behind explicit approval.
+
+Runtime guidance: `skills/migma/SKILL.md` and `skills/migma/references/grok-bot.md`. Human tutorial: [Connect Migma to Grok Bot](https://docs.migma.ai/tutorials/connect-migma-to-grok-bot).
+
 ### Claude
 
 ```bash
@@ -98,6 +136,7 @@ npx skills add . --list
 ## Repository Structure
 
 - `.codex-plugin/`, `.cursor-plugin/`, `.claude-plugin/` - plugin manifests
+- `mcp.json`, `.mcp.json` - hosted Migma MCP definitions for compatible plugin hosts
 - `.agents/plugins/marketplace.json` - Codex marketplace entry
 - `install-cli.sh` - installs the public `@migma/cli` npm package
 - `install.sh` - installs all public Migma skills
