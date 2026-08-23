@@ -32,6 +32,7 @@ Official sources:
 - Keep Migma calls server-side. Never put API keys or send calls in frontend/browser code.
 - Resolve the brand/project first. If there are multiple plausible projects, ask the user before creating emails.
 - Generate with `POST /v1/projects/emails/generate`, then poll generation status.
+- Convert existing HTML or `.eml` with `POST /v1/projects/emails/import-html` (or MCP `migma_import_html`), then poll the same status endpoint. Do not put HTML into generate.
 - Treat `result.emails[]` as the source of truth for generated emails.
 - Use `emailId` for one generated email, especially series slots.
 - Use `conversationId` only for whole-generation status or single-email fallback where explicitly supported.

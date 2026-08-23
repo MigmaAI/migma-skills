@@ -35,9 +35,9 @@ Do **not** ask the user to create or paste an API key from Settings.
 3. **Direct / claim-code** — when the client cannot complete the OAuth callback but can make HTTPS requests and securely store the returned credential: fetch `https://api.migma.ai/auth.md`. Claim-code does not repair a broken hosted connector. Request only the scopes needed.
 4. **CI / servers** — set `MIGMA_API_KEY` in the server secret store.
 
-After MCP connects, call `migma_get_capabilities` first. It returns granted scopes, available tools, unavailable tools with missing scopes, idempotency rules, brand scoping, and compatible guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email.
+After MCP connects, call `migma_get_capabilities` first. It returns granted scopes, available tools, unavailable tools with missing scopes, idempotency rules, brand scoping, and compatible guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email. Existing HTML, `.eml`, or a legacy template: `migma_import_html` (title Import / Convert HTML Email or Series). Do not paste HTML into generate.
 
-Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
+Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_import_html`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
 Guided MCP prompts: `research_and_create_email_series`, `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`.
 
@@ -51,7 +51,7 @@ Permission truth: `email:send` enables test and direct email. `campaign:write` e
 |---|---|
 | Brands | `migma_list_projects`, `migma_get_project`, `migma_import_brand` |
 | Knowledge | `migma_add_knowledge_base` — save lasting brand facts (no list-first). `migma_list_knowledge_base` only to review. |
-| Create / poll | `migma_generate_email`, `migma_get_generation_status`, `migma_list_emails` |
+| Create / poll | `migma_generate_email`, `migma_import_html`, `migma_get_generation_status`, `migma_list_emails` |
 | Fetch / edit | `migma_get_email`, `migma_edit_email` |
 | Test / send | `migma_send_test_email`, `migma_send_email` — ask before live send |
 | Campaigns | `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_get_campaign_stats`, `migma_get_campaign_logs` |
@@ -67,7 +67,7 @@ Permission truth: `email:send` enables test and direct email. `campaign:write` e
 When the user asks to design / create emails:
 
 1. Resolve brand (`migma_list_projects` / `migma_get_project`). Skip field catalog unless variables are needed.
-2. `migma_generate_email` once. Name each email's job in the prompt and pass `count` for a series (e.g. `count: 3`). Do not call generate once per email.
+2. `migma_generate_email` once. Name each email's job in the prompt and pass `count` for a series (e.g. `count: 3`). Do not call generate once per email. If the user already has HTML or an `.eml` file, call `migma_import_html` once instead (optional `instruction` to keep it as-is or apply the brand).
 3. Poll `migma_get_generation_status` until ready.
 4. **Stop and show.** Put the preview images and each `appUrl` in your reply immediately. Do not run validate / edit / re-poll first.
 5. Only then offer: “Want me to tighten copy, run inbox checks, or turn one into a campaign?”
@@ -124,6 +124,8 @@ Never send a generic ask like "create the emails this business needs."
 
 Pass `count` and specify each email in the prompt (numbered, with trigger, variables, and CTA). Status returns `result.emails[]` with `emailId`, `slot`, `subject`, `preheader`, `html`, `screenshotUrl`, `status`, and `sendOffsetDays` when timed. Store every `emailId`; edit/send each independently. Your app owns the timer for `sendOffsetDays`.
 
+Each generate or HTML import creates one conversation. Every email in that conversation is a **canvas slot** with its own public `emailId`. `appUrl` opens that slot on the canvas (`/chat?c={conversationId}` or `&slot=N`). Edit, send, and export use `emailId`. HTML is omitted unless you ask for `includeHtml`. Do not treat `conversationId` as one email when there are multiple slots.
+
 ## Live presence (REST / CLI only)
 
 Hosted MCP does not need a manual presence ping for normal ChatGPT use. When calling REST directly, send `X-Agent-Id: ai:<your-name>` on every request. Optional:
@@ -166,6 +168,8 @@ migma generate "Create a welcome email for new trial users" --wait --json
 migma generate "Create a 3-email onboarding series" --count 3 --wait --json
 migma emails list --project <projectId> --limit 5 --json
 migma generate "Create a follow-up to the welcome email" --reference <conversationId> --wait --json
+migma emails import-html ./welcome.html --wait --json
+migma emails import-html ./one.html ./two.html --instruction "Apply my brand" --wait --json
 migma emails get <emailId> --output ./email.html --json
 migma emails edit <emailId> --prompt "Make this shorter and more transactional" --output ./email.html --json
 ```
