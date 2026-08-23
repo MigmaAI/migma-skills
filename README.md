@@ -79,12 +79,12 @@ Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then in
 Migma bundles its hosted MCP server and Grok operating guidance. In Grok Bot desktop, paste:
 
 ```text
-Read https://docs.migma.ai/agents/mcp-grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Check for an existing connection first. Ask before adding it. Do not open or operate the Migma website for normal work. Do not ask for a Settings API key. Stop for my browser approval, then verify by listing my Migma brands read-only.
+Read https://docs.migma.ai/agents/mcp-grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Reuse the existing Migma connection when available. Ask before adding it. Use connected Migma tools for routine work. Complete access through browser OAuth, then verify by listing my Migma brands read-only.
 ```
 
 After connection, Grok Bot uses Migma tools directly. Browser use is only for human sign-in/access approval or explicit browser fallback.
 
-Migma is not verified as a live Grok Bot Marketplace listing. Agent-guided Remote MCP setup is beta. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
+Agent-guided Remote MCP setup is beta. Marketplace availability varies by Grok build and workspace policy. Grok web and Grok Build are separate clients.
 
 For Grok web, open `https://grok.com/connectors`, choose **New Connector → Custom**, and add `https://migma.ai/mcp`.
 
@@ -94,7 +94,7 @@ For Grok Build, add Migma from CLI:
 grok mcp add --transport http migma https://migma.ai/mcp
 ```
 
-Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only when the client can keep returned credentials out of chat, logs, shell history, and shared files; claim-code does not repair connector OAuth state.
+Grok normally opens browser OAuth on first use. If the host rejects its callback, follow `https://api.migma.ai/auth.md` when the client has supported secure credential storage. Confirm durable connector state after claim-code.
 
 Verify with:
 
@@ -105,7 +105,7 @@ grok mcp doctor migma
 Start read-only:
 
 ```text
-Use Migma to list my brands. Do not create, export, schedule, or send anything.
+Use Migma to list my brands read-only. State the Migma tool used.
 ```
 
 Keep live sends, schedules, audience changes, and publishing behind explicit approval.
