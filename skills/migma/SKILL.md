@@ -24,20 +24,26 @@ When you speak for Migma, speak like the user's own email person, first person a
 
 If the user wants to install Migma into an existing app, audit current email triggers, or wire product events to Migma sends, use the `setup` skill instead. This skill is for operating Migma once the workflow is known.
 
+When running inside Grok, Grok Bot, or Grok Build, also read `references/grok-bot.md` before connecting or writing.
+
 ## Connect (OAuth first — no API key)
 
 Do **not** ask the user to create or paste an API key from Settings.
 
 1. **Hosted MCP (preferred)** — connect `https://migma.ai/mcp`. The client runs browser OAuth. After approval, use `migma_*` tools. No key paste.
 2. **CLI** — only when MCP is unavailable: `migma login` (same browser OAuth; stores a key locally for the CLI).
-3. **Headless / claim-code** — only when no browser OAuth: fetch `https://api.migma.ai/auth.md`. For this skill, request only the scopes needed. For app setup, use `setup` (broad non-send scopes).
+3. **Direct / claim-code** — when the client cannot complete the OAuth callback but can make HTTPS requests and securely store the returned credential: fetch `https://api.migma.ai/auth.md`. Claim-code does not repair a broken hosted connector. Request only the scopes needed.
 4. **CI / servers only** — set `MIGMA_API_KEY`. Never send interactive users to Settings → API Keys.
 
-After MCP connects, call `migma_get_capabilities` first. It returns every tool, write vs read, idempotency rules, brand scoping, and guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email.
+After MCP connects, call `migma_get_capabilities` first. It returns granted scopes, available tools, unavailable tools with missing scopes, idempotency rules, brand scoping, and compatible guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email.
 
 Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
-Guided MCP prompts: `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`.
+Guided MCP prompts: `research_and_create_email_series`, `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`.
+
+Use one write channel per task. Once the user chooses MCP, stop browser or REST creation, wait for in-flight work, list existing drafts, and reconcile them before generating again. Never create one browser set and another MCP set for the same request.
+
+Permission truth: `email:send` enables test and direct email. `campaign:write` enables campaign creation, send, and schedule. Never describe a credential with `campaign:write` as no-send. A draft-only credential omits both.
 
 ### MCP path (default)
 
@@ -67,6 +73,17 @@ When the user asks to design / create emails:
 5. Only then offer: “Want me to tighten copy, run inbox checks, or turn one into a campaign?”
 
 Do **not** auto-run compatibility/deliverability/spam checks after every generate. Those tools are for when the user asks, or as a last step before send.
+
+## Research, required facts, and source images
+
+For research-backed emails:
+
+1. Use current primary sources. Build a dated checklist of exact facts/features before generation.
+2. Put every required fact in the generation prompt. Do not rely on a vague research summary.
+3. Pass up to 5 public HTTPS product/gallery URLs through `migma_generate_email.images`. URLs mentioned only in prompt text are not image inputs.
+4. Generate once with `count` and one stable `idempotency_key`, then poll and show previews first.
+5. After that first show, verify every requested fact and visually inspect expected source images. Do not claim success for anything not checked.
+6. Use `migma_edit_email` for text/content omissions. It does not accept structured source images; adding missing images requires a new generation and creates replacement drafts.
 
 When the user shares lasting brand facts (tone, products, offers, policies, audience, FAQ), call `migma_add_knowledge_base` once. Do not list first.
 
