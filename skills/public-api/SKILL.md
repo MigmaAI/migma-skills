@@ -20,7 +20,7 @@ Official sources:
 - TypeScript/Node backend: use the official SDK when adding a dependency is approved. Use REST only when the SDK is unavailable or exact HTTP control is needed.
 - Shell workflow, scripts, or CI: use the Migma CLI.
 - Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients should follow the browser sign-in and approval flow automatically, without asking the user to create or paste a key.
-- Else run `migma login` (browser OAuth). Else fetch `https://api.migma.ai/auth.md` (claim-code; withhold `email:send` for setup). CI/servers: `MIGMA_API_KEY`.
+- Else run `migma login` (browser OAuth). If a direct client cannot complete the OAuth callback but can securely store a returned credential, fetch `https://api.migma.ai/auth.md` (claim-code). For draft-only setup, withhold both `email:send` and `campaign:write`. CI/servers: `MIGMA_API_KEY`.
 - Local command-based MCP clients: use `@migma/mcp`. It reads `MIGMA_API_KEY` or the key stored by `migma login` in `~/.migma/config.json`.
 - Installing Migma into an existing app and wiring product-triggered sends: use `setup`.
 - Creating, editing, testing, sending, and exporting emails from an agent workflow: use `migma`.
@@ -36,6 +36,7 @@ Official sources:
 - Use `emailId` for one generated email, especially series slots.
 - Use `conversationId` only for whole-generation status or single-email fallback where explicitly supported.
 - Test before live send.
+- `email:send` permits test/direct sends. `campaign:write` permits campaign creation, send, and schedule. Never describe `campaign:write` as no-send.
 - Use campaigns when the user needs a named marketing send with scheduling, recipient counts, status, and history.
 - Use direct send for transactional messages, one-off sends, and test flows.
 - For contacts work, keep API keys server-side, use `projectId`, preserve consent/status fields, and do not scrape, cold-import, or add unsubscribed contacts.
@@ -57,6 +58,7 @@ When integrating Migma into an app:
 - Do not send cold email or send to unsubscribed contacts.
 - Do not scrape recipient lists.
 - Do not install new packages, create keys, make live sends, or migrate production traffic without current user approval.
+- Use one write channel per task. When MCP is selected, stop browser/REST creation and reconcile existing drafts before generating again.
 - If the app is frontend-only, stop at audit plus generated emails and ask for a backend/server prerequisite before wiring sends.
 - For one-off API work, request only the scopes needed for the task. For full app setup, use the `setup` skill's non-send registration rule.
 

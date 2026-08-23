@@ -76,19 +76,21 @@ Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then in
 
 ### Grok
 
-Migma bundles its hosted MCP server for Grok-compatible plugin hosts. When the Migma listing is available in **Grok Bot → Settings → Plugins**, install it and complete browser approval. No Migma API key is copied into Grok.
+Migma bundles its hosted MCP server and Grok operating guidance. Choose one mode per task: Grok Bot computer, Grok web custom MCP, or Grok Build. Do not run browser and MCP generation in parallel.
 
-Grok Bot is an early beta, so plugin availability varies by build, account, plan, and workspace policy. Grok web and Grok Build are separate clients; connecting either one does not prove the desktop Bot has the plugin.
+Migma is not verified as a live Grok Bot Marketplace listing. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
 
 For Grok web, open `https://grok.com/connectors`, choose **New Connector → Custom**, and add `https://migma.ai/mcp`.
 
-For Grok Build, add Migma from the CLI:
+For Grok Build, add Migma from CLI:
 
 ```bash
 grok mcp add --transport http migma https://migma.ai/mcp
 ```
 
-Grok opens browser OAuth on first use. Verify with:
+Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only for a direct path with secure credential storage; claim-code does not repair broken connector OAuth.
+
+Verify with:
 
 ```bash
 grok mcp doctor migma
@@ -101,6 +103,8 @@ Use Migma to list my brands. Do not create, export, schedule, or send anything.
 ```
 
 Keep live sends, schedules, audience changes, and publishing behind explicit approval.
+
+Runtime guidance: `skills/migma/SKILL.md` and `skills/migma/references/grok-bot.md`. Human tutorial: [Connect Migma to Grok Bot](https://docs.migma.ai/tutorials/connect-migma-to-grok-bot).
 
 ### Claude
 

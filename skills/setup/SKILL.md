@@ -21,10 +21,10 @@ Audit the app's current email surface, identify every real email touchpoint, cre
 2. Find existing email systems: providers, templates, transactional sends, campaigns, lifecycle jobs, webhooks, queues, and notification services.
 3. Reuse an existing connected Migma MCP before acquiring another credential. OAuth-capable hosted MCP clients should connect to `https://migma.ai/mcp` and complete browser approval; do not ask the user to create or paste an API key for that path.
 4. If there is no connected MCP, run `migma login` (browser OAuth) when a CLI is available. Then check whether `MIGMA_API_KEY` or `~/.migma/config.json` already has a key for SDK, REST, CLI, Local MCP, or server-side automation.
-5. If no key exists and you are operating as a direct or headless agent, use the claim-code flow at `https://api.migma.ai/auth.md`. Request every supported scope except `email:send`, including `email:write`, so the key can create and manage drafts but cannot send. Do not hand-pick a minimal subset: draft generation needs `email:write` plus the broader non-send scopes, so request them all and withhold only `email:send`. Do not send the user to Settings → API Keys except CI.
+5. If no credential exists and you are operating as a direct agent that cannot complete the OAuth callback, use the claim-code flow at `https://api.migma.ai/auth.md`. Start draft-only with `email:read email:write`; add other scopes only when the audited task needs them. Omit both `email:send` and `campaign:write`: `campaign:write` can send and schedule campaigns. Do not send the user to Settings → API Keys except CI.
 6. Continue the local audit while access is pending.
 7. Once access is ready, proceed through discovery and email creation without further approval: list projects, reuse or create emails, store IDs, and write send-wiring code. Creating an email only makes a draft; nothing is delivered.
-8. Stop and ask for explicit approval before, and only before, these hard gates: installing packages, skills, or plugins; sending a test email; sending live email; or requesting send scope (`email:send`) on the key.
+8. Stop and ask for explicit approval before, and only before, these hard gates: installing packages, skills, or plugins; sending a test email; sending live email; or requesting send-capable scopes (`email:send` or `campaign:write`).
 
 ## Setup Flow
 
@@ -76,7 +76,7 @@ If selected `emailId` values are present, wire those emails. If no `emailId` is 
 
 - Keep all Migma API keys server-side.
 - Do not put send calls in client code.
-- Approval tiers: audit and read are free; creating drafts is authorized by the registration approval; installing, test-sending, live-sending, and requesting send scope (`email:send`) are hard gates that each need explicit user approval. Never block draft creation behind a send-level gate.
+- Approval tiers: audit and read are free; creating email drafts is authorized by `email:write`; installing, test-sending, live-sending, and requesting send-capable scopes (`email:send` or `campaign:write`) are hard gates that each need explicit user approval. Never call `campaign:write` draft-only.
 - Do not send cold email.
 - Do not send to unsubscribed contacts.
 - Do not create demo-only send functions when real product triggers exist.
