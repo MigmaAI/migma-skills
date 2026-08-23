@@ -8,7 +8,7 @@ Grok Bot desktop uses connected `migma_*` tools for routine work.
 
 When Migma needs connection:
 
-1. Read `https://docs.migma.ai/agents/mcp-grok.md`.
+1. Read `https://docs.migma.ai/grok.md`.
 2. Inspect existing plugins and MCP connections, then reuse the existing Migma connection when available.
 3. Present `https://migma.ai/mcp` and ask before adding it.
 4. Stop for human browser sign-in and access approval.
