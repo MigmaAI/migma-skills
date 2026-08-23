@@ -74,6 +74,38 @@ Visual setup: [Connect Migma to ChatGPT](https://docs.migma.ai/tutorials/connect
 
 Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then install Migma.
 
+### Grok
+
+Migma bundles its hosted MCP server and Grok operating guidance. Choose one mode per task: Grok Bot computer, Grok web custom MCP, or Grok Build. Do not run browser and MCP generation in parallel.
+
+Migma is not verified as a live Grok Bot Marketplace listing. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
+
+For Grok web, open `https://grok.com/connectors`, choose **New Connector → Custom**, and add `https://migma.ai/mcp`.
+
+For Grok Build, add Migma from CLI:
+
+```bash
+grok mcp add --transport http migma https://migma.ai/mcp
+```
+
+Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only for a direct path with secure credential storage; claim-code does not repair broken connector OAuth.
+
+Verify with:
+
+```bash
+grok mcp doctor migma
+```
+
+Start read-only:
+
+```text
+Use Migma to list my brands. Do not create, export, schedule, or send anything.
+```
+
+Keep live sends, schedules, audience changes, and publishing behind explicit approval.
+
+Runtime guidance: `skills/migma/SKILL.md` and `skills/migma/references/grok-bot.md`. Human tutorial: [Connect Migma to Grok Bot](https://docs.migma.ai/tutorials/connect-migma-to-grok-bot).
+
 ### Claude
 
 ```bash
@@ -98,6 +130,7 @@ npx skills add . --list
 ## Repository Structure
 
 - `.codex-plugin/`, `.cursor-plugin/`, `.claude-plugin/` - plugin manifests
+- `mcp.json`, `.mcp.json` - hosted Migma MCP definitions for compatible plugin hosts
 - `.agents/plugins/marketplace.json` - Codex marketplace entry
 - `install-cli.sh` - installs the public `@migma/cli` npm package
 - `install.sh` - installs all public Migma skills
