@@ -76,9 +76,15 @@ Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then in
 
 ### Grok
 
-Migma bundles its hosted MCP server and Grok operating guidance. Choose one mode per task: Grok Bot computer, Grok web custom MCP, or Grok Build. Do not run browser and MCP generation in parallel.
+Migma bundles its hosted MCP server and Grok operating guidance. In Grok Bot desktop, paste:
 
-Migma is not verified as a live Grok Bot Marketplace listing. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
+```text
+Read https://docs.migma.ai/agents/mcp-grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Check for an existing connection first. Ask before adding it. Do not open or operate the Migma website for normal work. Do not ask for a Settings API key. Stop for my browser approval, then verify by listing my Migma brands read-only.
+```
+
+After connection, Grok Bot uses Migma tools directly. Browser use is only for human sign-in/access approval or explicit browser fallback.
+
+Migma is not verified as a live Grok Bot Marketplace listing. Agent-guided Remote MCP setup is beta. Grok web and Grok Build are separate clients; connecting either does not prove desktop plugin availability.
 
 For Grok web, open `https://grok.com/connectors`, choose **New Connector → Custom**, and add `https://migma.ai/mcp`.
 
@@ -88,7 +94,7 @@ For Grok Build, add Migma from CLI:
 grok mcp add --transport http migma https://migma.ai/mcp
 ```
 
-Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only for a direct path with secure credential storage; claim-code does not repair broken connector OAuth.
+Grok normally opens browser OAuth on first use. If host rejects its callback, do not ask user for Settings key. Follow `https://api.migma.ai/auth.md` only when the client can keep returned credentials out of chat, logs, shell history, and shared files; claim-code does not repair connector OAuth state.
 
 Verify with:
 
