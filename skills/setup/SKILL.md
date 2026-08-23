@@ -7,7 +7,7 @@ description: Install and wire Migma into an existing app. Use when the user want
 
 Use this skill when the user says they want to install, set up, wire, migrate, or hand off app email sending to Migma.
 
-Plain requests count. If the user says "install Migma to handle my email marketing", "set up Migma in this app", or similar, run this workflow. Do not make them restate triggers, providers, or strategy before you inspect the codebase.
+Plain requests count. If the user says "install Migma to handle my email marketing", "set up Migma in this app", or similar, run this workflow. Inspect the codebase before asking about triggers, providers, or strategy.
 
 This is a setup workflow, not a general command reference. For one-off email creation, editing, testing, sending, exporting, or audience work, use `migma`.
 
@@ -19,9 +19,9 @@ Audit the app's current email surface, identify every real email touchpoint, cre
 
 1. Detect the app stack and where backend/server code lives.
 2. Find existing email systems: providers, templates, transactional sends, campaigns, lifecycle jobs, webhooks, queues, and notification services.
-3. Reuse an existing connected Migma MCP before acquiring another credential. OAuth-capable hosted MCP clients should connect to `https://migma.ai/mcp` and complete browser approval; do not ask the user to create or paste an API key for that path.
+3. Reuse an existing connected Migma MCP. OAuth-capable hosted MCP clients connect to `https://migma.ai/mcp` and complete browser approval.
 4. If there is no connected MCP, run `migma login` (browser OAuth) when a CLI is available. Then check whether `MIGMA_API_KEY` or `~/.migma/config.json` already has a key for SDK, REST, CLI, Local MCP, or server-side automation.
-5. If no credential exists and you are operating as a direct agent that cannot complete the OAuth callback, use the claim-code flow at `https://api.migma.ai/auth.md`. Start draft-only with `email:read email:write`; add other scopes only when the audited task needs them. Omit both `email:send` and `campaign:write`: `campaign:write` can send and schedule campaigns. Do not send the user to Settings → API Keys except CI.
+5. For a direct agent that needs credential-based access, use the claim-code flow at `https://api.migma.ai/auth.md`. Start draft work with `email:read email:write`; add scopes that match the audited task. `campaign:write` includes campaign send and schedule. CI uses `MIGMA_API_KEY` from the server secret store.
 6. Continue the local audit while access is pending.
 7. Once access is ready, proceed through discovery and email creation without further approval: list projects, reuse or create emails, store IDs, and write send-wiring code. Creating an email only makes a draft; nothing is delivered.
 8. Stop and ask for explicit approval before, and only before, these hard gates: installing packages, skills, or plugins; sending a test email; sending live email; or requesting send-capable scopes (`email:send` or `campaign:write`).
@@ -75,12 +75,11 @@ If selected `emailId` values are present, wire those emails. If no `emailId` is 
 ## Guardrails
 
 - Keep all Migma API keys server-side.
-- Do not put send calls in client code.
-- Approval tiers: audit and read are free; creating email drafts is authorized by `email:write`; installing, test-sending, live-sending, and requesting send-capable scopes (`email:send` or `campaign:write`) are hard gates that each need explicit user approval. Never call `campaign:write` draft-only.
-- Do not send cold email.
-- Do not send to unsubscribed contacts.
-- Do not create demo-only send functions when real product triggers exist.
-- If a frontend-only app has no server path, stop after audit/email creation and ask for backend setup before wiring sends.
+- Keep send calls in server code.
+- Approval tiers: audit and read are free; creating email drafts is authorized by `email:write`; installing, test-sending, live-sending, and requesting send-capable scopes (`email:send` or `campaign:write`) are hard gates that each need explicit user approval. Treat `campaign:write` as send-capable.
+- Use opted-in subscribed contacts.
+- Wire real product triggers.
+- For a frontend-only app, complete audit and email creation, then ask for backend setup before wiring sends.
 
 ## Final Report
 

@@ -1,6 +1,6 @@
 ---
 name: migma
-description: "Design branded emails, send campaigns to an audience, and read campaign stats with Migma. Prefer hosted MCP OAuth at https://migma.ai/mcp — no API key paste."
+description: "Design branded emails, send campaigns to an audience, and read campaign stats with Migma. Prefer hosted MCP OAuth at https://migma.ai/mcp."
 metadata:
   openclaw:
     requires:
@@ -26,14 +26,14 @@ If the user wants to install Migma into an existing app, audit current email tri
 
 When running inside Grok, Grok Bot, or Grok Build, also read `references/grok-bot.md` before connecting or writing.
 
-## Connect (OAuth first — no API key)
+## Connect with OAuth
 
 Do **not** ask the user to create or paste an API key from Settings.
 
-1. **Hosted MCP (preferred)** — connect `https://migma.ai/mcp`. The client runs browser OAuth. After approval, use `migma_*` tools. No key paste.
+1. **Hosted MCP (preferred)** — connect `https://migma.ai/mcp`. The client runs browser OAuth. After approval, use `migma_*` tools.
 2. **CLI** — only when MCP is unavailable: `migma login` (same browser OAuth; stores a key locally for the CLI).
 3. **Direct / claim-code** — when the client cannot complete the OAuth callback but can make HTTPS requests and securely store the returned credential: fetch `https://api.migma.ai/auth.md`. Claim-code does not repair a broken hosted connector. Request only the scopes needed.
-4. **CI / servers only** — set `MIGMA_API_KEY`. Never send interactive users to Settings → API Keys.
+4. **CI / servers** — set `MIGMA_API_KEY` in the server secret store.
 
 After MCP connects, call `migma_get_capabilities` first. It returns granted scopes, available tools, unavailable tools with missing scopes, idempotency rules, brand scoping, and compatible guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email.
 
@@ -246,4 +246,4 @@ CLI has no `export png`. For PNG, use MCP `migma_export_png`.
 - Transactional or one-off: test send, then send with `emailId`.
 - Marketing blast without campaign lifecycle: send to tag or segment.
 - Marketing with schedule/status: create campaign with `emailId`, then send or schedule.
-- Never invent a Settings API-key step for ChatGPT / hosted MCP users.
+- ChatGPT and hosted MCP clients complete access through browser OAuth.

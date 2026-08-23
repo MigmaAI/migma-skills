@@ -19,8 +19,8 @@ Official sources:
 
 - TypeScript/Node backend: use the official SDK when adding a dependency is approved. Use REST only when the SDK is unavailable or exact HTTP control is needed.
 - Shell workflow, scripts, or CI: use the Migma CLI.
-- Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients should follow the browser sign-in and approval flow automatically, without asking the user to create or paste a key.
-- Else run `migma login` (browser OAuth). If a direct client cannot complete the OAuth callback but can securely store a returned credential, fetch `https://api.migma.ai/auth.md` (claim-code). For draft-only setup, withhold both `email:send` and `campaign:write`. CI/servers: `MIGMA_API_KEY`.
+- Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients complete browser sign-in, approval, and credential exchange automatically.
+- Else run `migma login` (browser OAuth). A direct client with secure credential storage can fetch `https://api.migma.ai/auth.md` (claim-code). For draft work, request `email:read email:write`. CI and servers use `MIGMA_API_KEY`.
 - Local command-based MCP clients: use `@migma/mcp`. It reads `MIGMA_API_KEY` or the key stored by `migma login` in `~/.migma/config.json`.
 - Installing Migma into an existing app and wiring product-triggered sends: use `setup`.
 - Creating, editing, testing, sending, and exporting emails from an agent workflow: use `migma`.
@@ -28,7 +28,7 @@ Official sources:
 
 ## Core Contracts
 
-- REST, SDK, CLI, Local MCP, server automation, and manual Remote MCP requests authenticate with `Authorization: Bearer $MIGMA_API_KEY`. Acquire that key with `migma login` or `auth.md`, not Settings, except CI. OAuth-capable hosted MCP clients acquire and send their bearer credential automatically.
+- REST, SDK, CLI, Local MCP, server automation, and manual Remote MCP requests authenticate with `Authorization: Bearer $MIGMA_API_KEY`. Acquire that key with `migma login` or `auth.md`; CI uses a Settings key from its secret store. OAuth-capable hosted MCP clients acquire and send their bearer credential automatically.
 - Keep Migma calls server-side. Never put API keys or send calls in frontend/browser code.
 - Resolve the brand/project first. If there are multiple plausible projects, ask the user before creating emails.
 - Generate with `POST /v1/projects/emails/generate`, then poll generation status.
@@ -36,10 +36,10 @@ Official sources:
 - Use `emailId` for one generated email, especially series slots.
 - Use `conversationId` only for whole-generation status or single-email fallback where explicitly supported.
 - Test before live send.
-- `email:send` permits test/direct sends. `campaign:write` permits campaign creation, send, and schedule. Never describe `campaign:write` as no-send.
+- `email:send` permits test/direct sends. `campaign:write` permits campaign creation, send, and schedule.
 - Use campaigns when the user needs a named marketing send with scheduling, recipient counts, status, and history.
 - Use direct send for transactional messages, one-off sends, and test flows.
-- For contacts work, keep API keys server-side, use `projectId`, preserve consent/status fields, and do not scrape, cold-import, or add unsubscribed contacts.
+- For contacts work, keep API keys server-side, use `projectId`, preserve consent/status fields, and import opted-in subscribed contacts.
 
 ## Email Setup Pattern
 
@@ -55,11 +55,10 @@ When integrating Migma into an app:
 
 ## Safety
 
-- Do not send cold email or send to unsubscribed contacts.
-- Do not scrape recipient lists.
-- Do not install new packages, create keys, make live sends, or migrate production traffic without current user approval.
+- Use opted-in subscribed contacts.
+- Keep package installs, key creation, live sends, and production traffic migrations behind current user approval.
 - Use one write channel per task. When MCP is selected, stop browser/REST creation and reconcile existing drafts before generating again.
-- If the app is frontend-only, stop at audit plus generated emails and ask for a backend/server prerequisite before wiring sends.
+- For a frontend-only app, complete the audit and generated emails, then ask for a backend/server prerequisite before wiring sends.
 - For one-off API work, request only the scopes needed for the task. For full app setup, use the `setup` skill's non-send registration rule.
 
 ## Output Checklist
