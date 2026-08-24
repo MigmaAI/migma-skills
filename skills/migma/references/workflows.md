@@ -40,6 +40,16 @@ migma validate deliverability --conversation <conversationId> --json
 migma validate all --conversation <conversationId> --json
 ```
 
+## "Convert this HTML email into Migma"
+
+```bash
+migma emails import-html ./welcome.html --instruction "Keep this exactly as-is" --wait --json
+# Series from several files:
+migma emails import-html ./one.html ./two.html --instruction "Apply my brand" --wait --json
+```
+
+Use `result.emails[].emailId` from the JSON. Do not paste HTML into `migma generate`.
+
 ## "Import our brand from our website"
 
 ```bash
