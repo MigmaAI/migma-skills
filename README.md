@@ -79,7 +79,7 @@ Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then in
 Migma bundles its hosted MCP server and Grok operating guidance. In Grok Bot desktop, paste:
 
 ```text
-Read https://docs.migma.ai/agents/mcp-grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Check for an existing connection first. Ask before adding it. Do not open or operate the Migma website for normal work. Do not ask for a Settings API key. Stop for my browser approval, then verify by listing my Migma brands read-only.
+Read https://docs.migma.ai/grok.md and connect this Grok Bot to Migma Remote MCP at https://migma.ai/mcp. Check for an existing connection first. Ask before adding it. Do not open or operate the Migma website for normal work. Do not ask for a Settings API key. Stop for my browser approval, then verify by listing my Migma brands read-only.
 ```
 
 After connection, Grok Bot uses Migma tools directly. Browser use is only for human sign-in/access approval or explicit browser fallback.
@@ -110,7 +110,7 @@ Use Migma to list my brands. Do not create, export, schedule, or send anything.
 
 Keep live sends, schedules, audience changes, and publishing behind explicit approval.
 
-Runtime guidance: `skills/migma/SKILL.md` and `skills/migma/references/grok-bot.md`. Human tutorial: [Connect Migma to Grok Bot](https://docs.migma.ai/tutorials/connect-migma-to-grok-bot).
+Runtime guidance: `skills/migma/SKILL.md` and `skills/migma/references/grok-bot.md`. Human tutorial: [Connect Migma to Grok Bot](https://docs.migma.ai/grok).
 
 ### Claude
 
