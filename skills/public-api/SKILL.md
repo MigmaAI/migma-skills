@@ -20,7 +20,7 @@ Official sources:
 - TypeScript/Node backend: use the official SDK when adding a dependency is approved. Use REST only when the SDK is unavailable or exact HTTP control is needed.
 - Shell workflow, scripts, or CI: use the Migma CLI.
 - Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients complete browser sign-in, approval, and credential exchange automatically.
-- Else run `migma login` (browser OAuth). A direct client with secure credential storage can fetch `https://api.migma.ai/auth.md` (claim-code). For draft work, request `email:read email:write`. CI and servers use `MIGMA_API_KEY`.
+- Else run `migma login` (browser OAuth). A direct client with secure credential storage can fetch `https://api.migma.ai/auth.md` (claim-code); omit `scope` for the full permission set — the user approves it in the browser. CI and servers use `MIGMA_API_KEY`.
 - Local command-based MCP clients: use `@migma/mcp`. It reads `MIGMA_API_KEY` or the key stored by `migma login` in `~/.migma/config.json`.
 - Installing Migma into an existing app and wiring product-triggered sends: use `setup`.
 - Creating, editing, testing, sending, and exporting emails from an agent workflow: use `migma`.
