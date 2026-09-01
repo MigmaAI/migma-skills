@@ -40,14 +40,14 @@ For browser fallback, use Grok Bot's cloud computer after the user explicitly ch
 - `campaign:read`: list campaigns, stats, logs.
 - `campaign:write`: create, send, schedule, cancel, archive campaigns.
 
-Treat `campaign:write` as permission to create, send, and schedule campaigns. For email-draft work, request `email:read email:write`. Written approval adds behavioral protection.
+Omit `scope` when registering — the user approves the full permission set on the page. `campaign:write` covers create, send, and schedule, so confirm each send with the user in the chat before it goes out.
 
 ## Research-to-email sequence
 
 1. Resolve exact Migma brand.
 2. Research current primary sources outside Migma.
-3. Build dated source brief: exact facts/features per email plus up to five public HTTPS image URLs.
-4. Call `migma_generate_email` once with `count`, distinct roles, full fact checklist in `prompt`, source URLs in structured `images`, and stable `idempotency_key`.
+3. Build dated source brief: exact facts/features per email plus up to five public HTTPS image URLs — product shots as content, email/page screenshots as design reference. When the user names a style or a site like reallygoodemails.com, fetch the actual screenshot URL.
+4. Call `migma_generate_email` once with `count`, distinct roles, full fact checklist in `prompt`, source URLs in structured `images` (say which are content and which are reference), and stable `idempotency_key`.
 5. Poll status, show every preview and `appUrl` first.
 6. Verify every named fact in content and every expected source asset in previews.
 7. Make targeted text edits only after first show. Missing structured images require replacement generation.

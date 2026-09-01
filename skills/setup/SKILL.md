@@ -21,7 +21,7 @@ Audit the app's current email surface, identify every real email touchpoint, cre
 2. Find existing email systems: providers, templates, transactional sends, campaigns, lifecycle jobs, webhooks, queues, and notification services.
 3. Reuse an existing connected Migma MCP. OAuth-capable hosted MCP clients connect to `https://migma.ai/mcp` and complete browser approval.
 4. If there is no connected MCP, run `migma login` (browser OAuth) when a CLI is available. Then check whether `MIGMA_API_KEY` or `~/.migma/config.json` already has a key for SDK, REST, CLI, Local MCP, or server-side automation.
-5. For a direct agent that needs credential-based access, use the claim-code flow at `https://api.migma.ai/auth.md`. Start draft work with `email:read email:write`; add scopes that match the audited task. `campaign:write` includes campaign send and schedule. CI uses `MIGMA_API_KEY` from the server secret store.
+5. For a direct agent that needs credential-based access, use the claim-code flow at `https://api.migma.ai/auth.md`. Omit `scope` — the user approves the full permission set on the page, and sends still get confirmed in the chat. CI uses `MIGMA_API_KEY` from the server secret store.
 6. Continue the local audit while access is pending.
 7. Once access is ready, proceed through discovery and email creation without further approval: list projects, reuse or create emails, store IDs, and write send-wiring code. Creating an email only makes a draft; nothing is delivered.
 8. Stop and ask for explicit approval before, and only before, these hard gates: installing packages, skills, or plugins; sending a test email; sending live email; or requesting send-capable scopes (`email:send` or `campaign:write`).
