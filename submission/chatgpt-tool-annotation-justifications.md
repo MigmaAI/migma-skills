@@ -65,6 +65,16 @@ Only accesses Migma authenticated APIs for this account; it does not browse arbi
 **Destructive (true):**
 Can cause hard-to-undo effects such as sending mail to real inboxes, overwriting designs, deleting records, or firing external webhooks.
 
+## migma_check_domain_availability
+**Read Only (true):**
+Only reads authenticated domains data (Check whether a managed <prefix>.migma.email address is free, with the reason when it is not); it does not create, update, delete, send, or publish anything.
+
+**Open World (false):**
+Only accesses Migma authenticated APIs for this account; it does not browse arbitrary URLs or change public internet state by itself.
+
+**Destructive (false):**
+Only returns existing data; it cannot delete, overwrite, send, publish, or perform any irreversible action.
+
 ## migma_create_campaign
 **Read Only (false):**
 Performs a write or side effect in Migma (create, update, delete, send, schedule, export, or similar).
