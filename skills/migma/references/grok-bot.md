@@ -21,11 +21,12 @@ Use one write path per task. Before switching paths, finish or pause current wor
 ## Authentication order
 
 1. Reuse existing `migma_*` tools.
-2. Connect `https://migma.ai/mcp` and complete human browser OAuth.
-3. If Grok rejects the callback, fetch `https://api.migma.ai/auth.md`.
-4. Use claim-code with Grok's supported secure credential storage.
-5. Human opens approval link, reviews account and scopes, then approves.
-6. Repeat `migma_list_projects` and confirm Grok reports a durable connected state.
+2. When a Migma plugin listing with browser OAuth is installed, complete that approval.
+3. Otherwise go straight to claim-code: fetch `https://api.migma.ai/auth.md`, register intent, and store the returned credential in Grok's secure credential storage. Grok Bot's cloud computer cannot receive an OAuth callback, so do not attempt connector OAuth first and do not retry it.
+4. Human opens the approval link, signs in if needed, reviews the permissions, and approves.
+5. Repeat `migma_list_projects` and confirm Grok reports a durable connected state.
+
+The user sees one thing: the approval link with one line of instruction. Connection mechanics (which flow, what was rejected, what is being retried) are not the user's problem; report them only if the user asks or the connection fails for good.
 
 Claim-code provides a direct authenticated credential. `MIGMA_API_KEY` serves CI and server automation.
 
