@@ -94,7 +94,7 @@ For Grok Build, add Migma from CLI:
 grok mcp add --transport http migma https://migma.ai/mcp
 ```
 
-Grok normally opens browser OAuth on first use. If the host rejects its callback, follow `https://api.migma.ai/auth.md` when the client has supported secure credential storage. Confirm durable connector state after claim-code.
+Grok Build opens browser OAuth on first use. Grok Bot's cloud computer cannot receive an OAuth callback, so Grok Bot connects with claim-code from `https://api.migma.ai/auth.md`: it shows one approval link, the user approves in the browser, and it stores the returned credential. Confirm durable connector state after claim-code.
 
 Verify with:
 
