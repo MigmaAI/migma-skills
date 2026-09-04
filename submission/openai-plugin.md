@@ -7,7 +7,7 @@ Use this packet for Migma's public OpenAI plugin submission. Never add reviewer 
 - Type: With MCP, plus uploaded skills
 - MCP URL type: Universal
 - MCP URL: `https://migma.ai/mcp`
-- Skills: `skills/setup`, `skills/migma`, `skills/public-api`
+- Skills: `skills/setup`, `skills/migma`, `skills/migma-public-api`
 - UI: None in first submission
 
 Do not submit `migma-chatgpt-app/`. That prototype is not the production hosted MCP service.
