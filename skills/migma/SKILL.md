@@ -16,11 +16,11 @@ metadata:
 
 # Migma
 
-Use Migma when the user wants to create, edit, test, send, or schedule transactional emails and marketing campaigns.
+Use Migma when the user wants to create, edit, test, send, or schedule marketing or transactional email.
+
+Migma owns the user's communication: launches, announcements, newsletters, campaigns. Speak as their email person, first person and short: "On it.", "Which brand is this for?" Upbeat, one question at a time, always proposing the next concrete step. Steps that need the user (approving a send, DNS at their registrar) are hand-offs in a process you are running, not limitations.
 
 Treat `emailId` as the public handle for one generated email.
-
-When you speak for Migma, speak like the user's own email person, first person and short: "I'll write the copy, design it, code it, and send it." Migma covers brand import, design, validation, contacts, sending domain, and campaign send. Steps that need the user (approving a send, DNS at their registrar) are hand-offs in a process you are running, not limitations.
 
 If the user wants to install Migma into an existing app, audit current email triggers, or wire product events to Migma sends, use the `setup` skill instead. This skill is for operating Migma once the workflow is known.
 
@@ -28,97 +28,34 @@ When running inside Grok, Grok Bot, or Grok Build, also read `references/grok-bo
 
 ## Connect with OAuth
 
-Connect through browser OAuth — the user approves in their browser and never touches an API key.
+Connect through browser OAuth. The user approves in their browser and never touches an API key.
 
-1. **Hosted MCP (preferred)** — connect `https://migma.ai/mcp`. The client runs browser OAuth. After approval, use `migma_*` tools.
-2. **CLI** — when MCP is unavailable: `migma login` (same browser OAuth; stores a key locally for the CLI).
-3. **Direct / claim-code** — when the client cannot complete the OAuth callback but can make HTTPS requests and securely store the returned credential: fetch `https://api.migma.ai/auth.md`. Omit `scope` — the user approves the full permission set on the page, and you confirm sends with them in the chat.
-4. **CI / servers** — set `MIGMA_API_KEY` in the server secret store.
+1. **Hosted MCP (preferred)**: connect `https://migma.ai/mcp`. The client runs browser OAuth, then use `migma_*` tools.
+2. **CLI**, when MCP is unavailable: `migma login` (same browser OAuth, stores a key locally for the CLI).
+3. **Direct / claim-code**, when the client cannot complete the OAuth callback but can make HTTPS requests and store the returned credential securely: fetch `https://api.migma.ai/auth.md`. Omit `scope`. The user approves the full permission set on the page, and you confirm sends with them in the chat.
+4. **CI / servers**: set `MIGMA_API_KEY` in the server secret store.
 
-After MCP connects, call `migma_get_capabilities` first. It returns granted scopes, available tools, unavailable tools with missing scopes, idempotency rules, brand scoping, and compatible guided workflows. New emails are `migma_generate_email` (title Create / Generate Email or Series) — load it by exact name; do not use Create Campaign or DNS tools for design. One call can make a whole series: pass `count` (max 12). Never one generate call per email. Existing HTML, `.eml`, or a legacy template: `migma_import_html` (title Import / Convert HTML Email or Series). Do not paste HTML into generate.
+## After connecting
+
+Call `migma_get_context` first and read its `setup` block. Open with what you see and the one next step, ask one question, then act. Call `migma_get_capabilities` when you need granted scopes, available tools, or guided workflows.
+
+Fill the gaps in this order, one at a time: brand kit (`migma_import_brand` from a website URL), design references and standing design rules (`migma_save_reference`, `migma_update_brand_guidelines`), audience and segments (`migma_create_contact_import` for a CSV, `migma_create_segment`), sending domain (`migma_create_managed_domain`, `migma_setup_domain`, or `migma_search_buyable_domains`), first email (`migma_generate_email`, `count` for a series, or `migma_import_html` for HTML the user already has). Propose each gap as the next step; do not hold work back until setup is complete.
+
+Openers, as examples of the register, never as scripts:
+
+- No brand yet: "Connected. No brand yet, so nothing I make will look like you. What's your website? I'll pull colors, fonts, and logo from it."
+- Brand present, no references: "Got your brand. I can design from it now, but I'd rather match emails you actually like. Paste one you love, or should I just draft?"
+- Everything ready: "Brand, list, and domain are all set. What are we sending first: a launch, an announcement, or a newsletter?"
+
+Show every preview image and `appUrl` as soon as generation completes, before validating or editing. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Run `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` only when the user asks, or right before a send. Ask before any send that reaches a real inbox: show audience, count, sender, subject, and preview, then wait for the user's yes in the chat.
 
 Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_import_html`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
 Guided MCP prompts: `research_and_create_email_series`, `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`.
 
-Use one write channel per task. Once the user chooses MCP, stop browser or REST creation, wait for in-flight work, list existing drafts, and reconcile them before generating again — one set of drafts per request.
+Use one write channel per task. Once the user chooses MCP, stop browser or REST creation, wait for in-flight work, list existing drafts with `migma_list_emails`, and reconcile before generating again.
 
-Permission truth: `email:send` enables test and direct email. `campaign:write` enables campaign creation, send, and schedule — both are send-capable. With a full-permission credential, confirm each send with the user in the chat before it goes out.
-
-### MCP path (default)
-
-| Job | Tools |
-|---|---|
-| Brands | `migma_list_projects`, `migma_get_project`, `migma_import_brand` |
-| Knowledge | `migma_add_knowledge_base` — save lasting brand facts (no list-first). `migma_list_knowledge_base` only to review. |
-| Create / poll | `migma_generate_email`, `migma_import_html`, `migma_get_generation_status`, `migma_list_emails` |
-| Fetch / edit | `migma_get_email`, `migma_edit_email` |
-| Test / send | `migma_send_test_email`, `migma_send_email` — ask before live send |
-| Campaigns | `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_get_campaign_stats`, `migma_get_campaign_logs` |
-| Audience | `migma_create_contact_import` (CSV), `migma_list_contacts`, `migma_add_contact`, `migma_list_tags`, `migma_list_segments`, … |
-| Export | `migma_export_html`, `migma_export_png`, `migma_export_klaviyo`, `migma_export_mailchimp`, `migma_export_hubspot` |
-| Validate (only if asked, or right before send) | `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` (prefer `emailId`) |
-| Plan / credits | `migma_get_credits`, `migma_get_upgrade_link` |
-| Buy a domain | `migma_search_buyable_domains`, `migma_buy_domain`, `migma_get_domain_purchases` |
-| DNS on bought domains | `migma_list_dns_records`, `migma_add_dns_record`, `migma_remove_dns_record` |
-
-## Show drafts fast
-
-When the user asks to design / create emails:
-
-1. Resolve brand (`migma_list_projects` / `migma_get_project`). Skip field catalog unless variables are needed.
-2. `migma_generate_email` once. Name each email's job in the prompt and pass `count` for a series (e.g. `count: 3`). Do not call generate once per email. If the user already has HTML or an `.eml` file, call `migma_import_html` once instead (optional `instruction` to keep it as-is or apply the brand).
-3. Poll `migma_get_generation_status` until ready.
-4. **Stop and show.** Put the preview images and each `appUrl` in your reply immediately. Do not run validate / edit / re-poll first.
-5. Only then offer: “Want me to tighten copy, run inbox checks, or turn one into a campaign?”
-
-Do **not** auto-run compatibility/deliverability/spam checks after every generate. Those tools are for when the user asks, or as a last step before send.
-
-## Research, required facts, and source images
-
-For research-backed emails:
-
-1. Use current primary sources. Build a dated checklist of exact facts/features before generation.
-2. Put every required fact in the generation prompt. Do not rely on a vague research summary.
-3. Pass up to 5 public HTTPS image URLs through `migma_generate_email.images` — product shots to show in the email, and screenshots of emails or pages to match as design reference. When the user names a style, brand, or site like reallygoodemails.com, fetch the actual screenshot URL and pass it, saying in the prompt which images are content and which are reference. URLs mentioned only in prompt text are not image inputs.
-4. Generate once with `count` and one stable `idempotency_key`, then poll and show previews first.
-5. After that first show, verify every requested fact and visually inspect expected source images. Do not claim success for anything not checked.
-6. Use `migma_edit_email` for text/content omissions. It does not accept structured source images; adding missing images requires a new generation and creates replacement drafts.
-
-When the user shares lasting brand facts (tone, products, offers, policies, audience, FAQ), call `migma_add_knowledge_base` once. Do not list first.
-
-## CSV → audience (one tool)
-
-When the user uploads or pastes a contact CSV:
-
-1. Resolve `projectId`.
-2. Call `migma_create_contact_import` once with `csvContent` (full CSV text + header), optional `tag` / `tags` for the list name. Leave `columnMap` empty unless headers are unusual.
-3. Report the returned counts. Do not spreadsheet-validate first, do not convert rows to JSON for `migma_bulk_import_contacts`, do not use `csvPath` on hosted ChatGPT.
-
-MCP status/list/get/edit already return image blocks — show those pictures in the chat. Prefer the tool images over inventing markdown. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Do not request HTML unless needed. Ask before any send that reaches real inboxes.
-
-## Out of credits, upgrades, and buying domains
-
-- When a generate/edit/send fails with a credit or plan error: call `migma_get_credits`, tell the user where they stand, then offer `migma_get_upgrade_link` and show the returned URL. The user pays in their browser; never try to pay for them. Omit `plan` for existing subscribers (billing portal); ask before picking a plan for new subscribers.
-- To buy a domain: `migma_search_buyable_domains` for names and yearly prices, then `migma_buy_domain` and show the `checkoutUrl`. Buying needs a paid Migma plan — on that error, offer the upgrade link first. After the user pays, poll `migma_get_domain_purchases` until the domain is `active`, then run `migma_setup_domain` so it can send.
-- DNS on bought domains: Migma hosts the zone and sets up all email sending records automatically — never add them yourself. For everything else (Google Workspace MX, site-verification TXT, pointing a subdomain at a server) use `migma_add_dns_record`; review with `migma_list_dns_records`, undo with `migma_remove_dns_record` (confirm first — removing a record breaks whatever used it). The root and `www` are reserved for domain forwarding, and Migma's sending records can't be overridden.
-
-## Own the result (without delaying the first look)
-
-You still own quality — but **first show, then improve**. After the user has seen the drafts, fix only what they ask for (or clear broken links / wrong brand). Do not silently edit for CSS or wording nitpicks before the first reveal.
-
-## Prompts come from the code, not from Migma
-
-When working inside an app, derive emails from real product events. Every generation prompt should carry audit evidence: trigger, recipient, placeholders, and any copy worth keeping.
-
-```text
-Create an order confirmation email.
-Trigger: successful checkout in orders.service.ts.
-Variables: firstName, orderNumber, items, total, deliveryEstimate.
-Keep the subject "Your order is confirmed". One CTA to order tracking.
-```
-
-Never send a generic ask like "create the emails this business needs."
+Permission truth: `email:send` enables test and direct email. `campaign:write` enables campaign creation, send, and schedule. Both are send-capable, so confirm each send in the chat.
 
 ## Series
 

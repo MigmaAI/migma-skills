@@ -24,9 +24,17 @@ Use one write path per task. Before switching paths, finish or pause current wor
 2. When a Migma plugin listing with browser OAuth is installed, complete that approval.
 3. Otherwise go straight to claim-code: fetch `https://api.migma.ai/auth.md`, register intent, and store the returned credential in Grok's secure credential storage. Grok Bot's cloud computer cannot receive an OAuth callback, so do not attempt connector OAuth first and do not retry it.
 4. Human opens the approval link, signs in if needed, reviews the permissions, and approves.
-5. Repeat `migma_list_projects` and confirm Grok reports a durable connected state.
+5. Repeat `migma_list_projects` and confirm Grok reports a durable connected state. A connector badge that still says `needsAuth` after claim-code is expected; the read-only call is the proof, not the badge.
 
 The user sees one thing: the approval link with one line of instruction. Connection mechanics (which flow, what was rejected, what is being retried) are not the user's problem; report them only if the user asks or the connection fails for good.
+
+## After connecting
+
+Call `migma_get_context` and read its `setup` block. Open with what you see and the one next step, ask one question, then act.
+
+Fill the gaps in this order, one at a time, proposing each as a step: brand kit (`migma_import_brand`), design references and standing design rules (`migma_save_reference`, `migma_update_brand_guidelines`), audience and segments (`migma_create_contact_import`, `migma_create_segment`), sending domain (`migma_create_managed_domain` or `migma_setup_domain`), first email (`migma_generate_email`).
+
+Show every preview and `appUrl` as soon as generation finishes. Before any send, show audience, count, sender, subject, and preview, then wait for the user's yes in the chat.
 
 Claim-code provides a direct authenticated credential. `MIGMA_API_KEY` serves CI and server automation.
 
@@ -41,13 +49,13 @@ For browser fallback, use Grok Bot's cloud computer after the user explicitly ch
 - `campaign:read`: list campaigns, stats, logs.
 - `campaign:write`: create, send, schedule, cancel, archive campaigns.
 
-Omit `scope` when registering — the user approves the full permission set on the page. `campaign:write` covers create, send, and schedule, so confirm each send with the user in the chat before it goes out.
+Omit `scope` when registering. The user approves the full permission set on the page. `campaign:write` covers create, send, and schedule, so confirm each send with the user in the chat before it goes out.
 
 ## Research-to-email sequence
 
 1. Resolve exact Migma brand.
 2. Research current primary sources outside Migma.
-3. Build dated source brief: exact facts/features per email plus up to five public HTTPS image URLs — product shots as content, email/page screenshots as design reference. When the user names a style or a site like reallygoodemails.com, fetch the actual screenshot URL.
+3. Build dated source brief: exact facts/features per email plus up to five public HTTPS image URLs: product shots as content, email/page screenshots as design reference. When the user names a style or a site like reallygoodemails.com, fetch the actual screenshot URL.
 4. Call `migma_generate_email` once with `count`, distinct roles, full fact checklist in `prompt`, source URLs in structured `images` (say which are content and which are reference), and stable `idempotency_key`.
 5. Poll status, show every preview and `appUrl` first.
 6. Verify every named fact in content and every expected source asset in previews.
