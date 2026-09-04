@@ -143,7 +143,7 @@ npx skills add . --list
 - `setup.sh` - installs CLI plus skills
 - `skills/setup/` - app setup workflow
 - `skills/migma/` - daily Migma CLI workflow
-- `skills/public-api/` - REST, SDK, CLI, and MCP guidance
+- `skills/migma-public-api/` - REST, SDK, CLI, and MCP guidance
 - `assets/` - plugin artwork
 
 ## Source of Truth
