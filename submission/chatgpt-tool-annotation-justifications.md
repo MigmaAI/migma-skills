@@ -475,6 +475,16 @@ Only accesses Migma authenticated APIs for this account; it does not browse arbi
 **Destructive (true):**
 Can cause hard-to-undo effects such as sending mail to real inboxes, overwriting designs, deleting records, or firing external webhooks.
 
+## migma_save_reference
+**Read Only (false):**
+Writes a favorite pointer on one generated email or a design-reference entry in the brand's knowledge base; both are reversible and send nothing.
+
+**Open World (false):**
+Only accesses Migma authenticated APIs for this account; it does not browse arbitrary URLs or change public internet state by itself.
+
+**Destructive (false):**
+Adds or flips a reference marker inside the account; it cannot delete, overwrite, send, publish, or perform any irreversible action.
+
 ## migma_schedule_campaign
 **Read Only (false):**
 Performs a write or side effect in Migma (create, update, delete, send, schedule, export, or similar).
@@ -544,6 +554,16 @@ Only accesses Migma authenticated APIs for this account; it does not browse arbi
 
 **Destructive (false):**
 Does not delete records, overwrite irreversibly, or send live mail by itself; outcomes stay reversible or limited to drafts, exports, or reads.
+
+## migma_update_brand_guidelines
+**Read Only (false):**
+Replaces the brand's standing design rules and image style notes inside the authenticated Migma account; Migma snapshots the previous version first.
+
+**Open World (false):**
+Only accesses Migma authenticated APIs for this account; it does not browse arbitrary URLs or change public internet state by itself.
+
+**Destructive (false):**
+Reversible from project history and returns the replaced text; it cannot delete accounts, send, publish, or perform any irreversible action.
 
 ## migma_validate_compatibility
 **Read Only (true):**
