@@ -1,8 +1,8 @@
 {
   "name": "migma",
   "displayName": "Migma",
-  "description": "Create, manage, and send email with Migma from AI coding agents.",
-  "version": "0.2.0",
+  "description": "Run your entire email marketing from Cursor and Grok Bot. Migma designs on-brand campaigns, sends when you approve, and gets better with every send.",
+  "version": "0.2.1",
   "author": {
     "name": "Migma",
     "email": "support@migma.ai"

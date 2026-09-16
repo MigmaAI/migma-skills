@@ -72,7 +72,11 @@ Visual setup: [Connect Migma to ChatGPT](https://docs.migma.ai/tutorials/connect
 
 ### Cursor
 
+Run your entire email marketing from Cursor and Grok Bot. Migma designs on-brand campaigns, sends when you approve, and gets better with every send.
+
 Paste `https://github.com/MigmaAI/migma-skills` into Settings > Plugins, then install Migma.
+
+See the [Cursor and Grok Bot listing](submission/cursor-marketplace.md) for the full description, five workflow screenshots with example prompts, connection requirements, and permissions.
 
 ### Grok
 
