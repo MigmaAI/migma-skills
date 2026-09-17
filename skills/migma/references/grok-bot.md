@@ -30,13 +30,21 @@ The user sees one thing: the approval link with one line of instruction. Connect
 
 ## After connecting
 
-Call `migma_get_context` and read its `setup` block. Open with what you see and the one next step, ask one question, then act.
+Follow the main skill's **After connecting** section. Write like WhatsApp: usually 1–2 short sentences, simple words, matching the user's language. Give the result and relevant returned links, with previews when available. No hype, headings, recaps, process narration, or forced follow-up question. Stop when done. Expand only when asked or needed for a decision; keep errors and send-approval details clear. Start with the user's goal; suggest an email only if they have no task in mind. Use `migma_get_context` to confirm the working brand. Never turn a failed read into "you have no brand kit."
 
-Fill the gaps in this order, one at a time, proposing each as a step: brand kit (`migma_import_brand`), design references and standing design rules (`migma_save_reference`, `migma_update_brand_guidelines`), audience and segments (`migma_create_contact_import`, `migma_create_segment`), sending domain (`migma_create_managed_domain` or `migma_setup_domain`), first email (`migma_generate_email`).
+If the website is needed: "What's your website?"
 
-Show every preview and `appUrl` as soon as generation finishes. Before any send, show audience, count, sender, subject, and preview, then wait for the user's yes in the chat.
+Ask for brand guidelines or emails they love when useful, save lasting rules and image style, and favorite liked designs for future emails. Offer to add their contact list and group people using the information available. Keep tool names, field mapping, and setup details internal. Skip completed steps and keep the user's current task moving.
 
-Claim-code provides a direct authenticated credential. `MIGMA_API_KEY` serves CI and server automation.
+Show previews and canvas links as soon as generation finishes. Before any send, show audience, count, sender, subject, timing, and preview, then wait for approval.
+
+## Save designs the user likes
+
+Treat "I like this design," "favorite this email," "save this style," and "use this next time" as a request to call `migma_save_reference` with `{"emailId":"<chosen emailId>"}`. Use the ID already returned for that draft; for a series, use the selected email's ID. Ask which one only when unclear. A one-off edit or send approval does not by itself ask to save a style.
+
+The tool requires `project:write`. Wait for `favorite: true`, then say "Saved as a reference for future emails for this brand." Migma uses saved references by default for that brand, unless disabled; the favorite follows later saved edits. Do not export HTML, re-import the email, duplicate it as a knowledge-base entry, or create a new draft to verify the save. Repeating the same `emailId` is safe.
+
+For an external email, use `projectId` + `title` + `html`. A screenshot alone is a generation input, not a saved standing reference. If the tool is missing, check `migma_get_capabilities` and the connection's `project:write` permission before reporting what is unavailable.
 
 ## Browser fallback
 
@@ -45,6 +53,7 @@ For browser fallback, use Grok Bot's cloud computer after the user explicitly ch
 ## Permission truth
 
 - `email:read email:write`: list/read/create/edit email drafts.
+- `project:write`: save favorite emails, design references, and brand guidelines.
 - `email:send`: test/direct sends.
 - `campaign:read`: list campaigns, stats, logs.
 - `campaign:write`: create, send, schedule, cancel, archive campaigns.
@@ -61,4 +70,4 @@ Omit `scope` when registering. The user approves the full permission set on the 
 6. Verify every named fact in content and every expected source asset in previews.
 7. Make targeted text edits only after first show. Missing structured images require replacement generation.
 
-Report brand, execution path, source checklist, generation ID, email IDs, previews, canvas links, and verification status. Mark completion after verification passes.
+Show previews and canvas links with one short result, then stop. Keep IDs, execution details, and checklists internal unless requested. Mark completion only after verification passes; name any unresolved issue briefly.
