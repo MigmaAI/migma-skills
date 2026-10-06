@@ -36,6 +36,7 @@ Official sources:
 - Treat `result.emails[]` as the source of truth for generated emails.
 - Use `emailId` for one generated email, especially series slots.
 - Use `conversationId` only for whole-generation status or single-email fallback where explicitly supported.
+- Save a liked email as a standing design reference with MCP `migma_save_reference({ emailId })`, SDK `emails.setFavorite(emailId, true)`, or `PUT /v1/emails/{emailId}/favorite` with `{ "favorite": true }`. Requires `project:write`; repeating the same state is safe. Confirm only after `favorite: true`. Future emails for that brand use saved references by default unless disabled; the reference follows later saved edits. Use the chosen slot's `emailId` for a series, not `conversationId`. No HTML export or re-import is needed.
 - Test before live send.
 - `email:send` permits test/direct sends. `campaign:write` permits campaign creation, send, and schedule.
 - Use campaigns when the user needs a named marketing send with scheduling, recipient counts, status, and history.
