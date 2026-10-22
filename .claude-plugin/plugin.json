@@ -1,12 +1,19 @@
 {
   "name": "migma",
+  "displayName": "Migma",
   "description": "Create, manage, and send email with Migma from AI coding agents.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Migma",
-    "email": "support@migma.ai"
+    "email": "support@migma.ai",
+    "url": "https://migma.ai"
   },
   "homepage": "https://migma.ai",
+  "icon": "./assets/logo-square.svg",
+  "documentationUrl": "https://docs.migma.ai/tutorials/connect-migma-to-claude-code",
+  "supportUrl": "https://migma.ai/contact",
+  "privacyPolicyUrl": "https://docs.migma.ai/legal/privacy-policy",
+  "termsOfServiceUrl": "https://docs.migma.ai/legal/terms-of-use",
   "repository": "https://github.com/MigmaAI/migma-skills",
   "license": "MIT",
   "skills": "./skills/",

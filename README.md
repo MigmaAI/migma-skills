@@ -23,29 +23,26 @@ npx skills add MigmaAI/migma-skills --list
 npx skills add MigmaAI/migma-skills
 ```
 
-Install the CLI and all skills together:
+Install the CLI and all skills through their package managers:
 
 ```bash
-curl -fsSL https://install.migma.ai/setup | sh
+npm install -g @migma/cli
+npx skills add MigmaAI/migma-skills --all --global
 ```
 
-Install all skills globally with the script:
+Install all skills globally:
 
 ```bash
-curl -fsSL https://install.migma.ai/skills | sh
+npx skills add MigmaAI/migma-skills --all --global
 ```
 
 Install only the CLI:
 
 ```bash
-curl -fsSL https://install.migma.ai/cli | sh
+npm install -g @migma/cli
 ```
 
-Hosted redirect targets:
-
-- `https://install.migma.ai/skills` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install.sh`
-- `https://install.migma.ai/setup` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/setup.sh`
-- `https://install.migma.ai/cli` -> `https://raw.githubusercontent.com/MigmaAI/migma-skills/main/install-cli.sh`
+From a complete local checkout, `sh ./setup.sh` runs the bundled CLI and skill installers. `sh ./install.sh` installs the skills from that same checkout. These scripts need their sibling files; use the package-manager commands above without a checkout.
 
 Install one skill:
 
@@ -123,6 +120,15 @@ claude plugin marketplace add MigmaAI/migma-skills
 claude plugin install migma@migma-plugins
 ```
 
+The Claude plugin connects to `https://migma.ai/mcp` through browser OAuth. It needs no API-key configuration. Use the authenticated tools without reading host secrets or copying credentials from another client. App and CI integrations need a dedicated server secret configured by the user.
+
+## Support and policies
+
+- [Documentation](https://docs.migma.ai/tutorials/connect-migma-to-claude-code)
+- [Support](https://migma.ai/contact)
+- [Privacy policy](https://docs.migma.ai/legal/privacy-policy)
+- [Terms of use](https://docs.migma.ai/legal/terms-of-use)
+
 ## Verify
 
 After install, try one task:
@@ -143,8 +149,8 @@ npx skills add . --list
 - `mcp.json`, `.mcp.json` - hosted Migma MCP definitions for compatible plugin hosts
 - `.agents/plugins/marketplace.json` - Codex marketplace entry
 - `install-cli.sh` - installs the public `@migma/cli` npm package
-- `install.sh` - installs all public Migma skills
-- `setup.sh` - installs CLI plus skills
+- `install.sh` - installs the bundled Migma skills from a complete checkout
+- `setup.sh` - runs the bundled CLI and skill installers
 - `skills/setup/` - app setup workflow
 - `skills/migma/` - daily Migma CLI workflow
 - `skills/migma-public-api/` - REST, SDK, CLI, and MCP guidance

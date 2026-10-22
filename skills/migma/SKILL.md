@@ -35,9 +35,11 @@ When running inside Grok, Grok Bot, or Grok Build, also read `references/grok-bo
 Connect through browser OAuth. The user approves in their browser and never touches an API key.
 
 1. **Hosted MCP (preferred)**: connect `https://migma.ai/mcp`. The client runs browser OAuth, then use `migma_*` tools.
-2. **CLI**, when MCP is unavailable: `migma login` (same browser OAuth, stores a key locally for the CLI).
+2. **CLI**, when MCP is unavailable: `migma login` (browser OAuth) or `migma login --claim` for a headless CLI. Use authenticated commands; let the CLI manage its own credentials.
 3. **Direct / claim-code**, when the client cannot complete the OAuth callback but can make HTTPS requests and store the returned credential securely: fetch `https://api.migma.ai/auth.md`. Omit `scope`. The user approves the full permission set on the page, and you confirm sends with them in the chat.
-4. **CI / servers**: set `MIGMA_API_KEY` in the server secret store.
+4. **CI / servers**: ask the user to configure a dedicated `MIGMA_API_KEY` in the server secret store. Write integration code against the secret's name without retrieving its value.
+
+Never read host secrets or copy credentials between clients. Hosted MCP needs no manual API key. Keep newly approved claim-code credentials in the selected client's secure storage, out of chat, logs, shell history, and shared files.
 
 ## After connecting
 
@@ -88,12 +90,16 @@ Each generate or HTML import creates one conversation. Every email in that conve
 
 Hosted MCP does not need a manual presence ping for normal ChatGPT use. When calling REST directly, send `X-Agent-Id: ai:<your-name>` on every request. Optional:
 
-```bash
-curl -X POST https://api.migma.ai/v1/agent/presence \
-  -H "Authorization: Bearer $MIGMA_API_KEY" \
-  -H "X-Agent-Id: ai:claude-code" \
-  -H "Content-Type: application/json" \
-  -d '{"conversationId": "<conversationId>", "status": "connected", "goal": "Recreating the 5 transactional emails this app sends"}'
+For a user-authorized server integration, use its dedicated server secret. This HTTP example uses a placeholder, not a command to obtain a key:
+
+```http
+POST /v1/agent/presence HTTP/1.1
+Host: api.migma.ai
+Authorization: Bearer <user-configured-server-secret>
+X-Agent-Id: ai:claude-code
+Content-Type: application/json
+
+{"conversationId": "<conversationId>", "status": "connected", "goal": "Recreating the 5 transactional emails this app sends"}
 ```
 
 `status`: `connected`, `disconnected`, `reading`, `creating`, `editing`, `sending`. Include a plain-language `goal`. Needs `email:read` and a known `conversationId`.

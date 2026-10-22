@@ -20,15 +20,15 @@ Official sources:
 - TypeScript/Node backend: use the official SDK when adding a dependency is approved. Use REST only when the SDK is unavailable or exact HTTP control is needed.
 - Shell workflow, scripts, or CI: use the Migma CLI.
 - Remote MCP clients: connect to `https://migma.ai/mcp`. OAuth-capable clients complete browser sign-in, approval, and credential exchange automatically.
-- Else run `migma login` (browser OAuth). A direct client with secure credential storage can fetch `https://api.migma.ai/auth.md` (claim-code); omit `scope` for the full permission set — the user approves it in the browser. CI and servers use `MIGMA_API_KEY`.
-- Local command-based MCP clients: use `@migma/mcp`. It reads `MIGMA_API_KEY` or the key stored by `migma login` in `~/.migma/config.json`.
+- Else run `migma login` (browser OAuth), or `migma login --claim` for a headless CLI, then use authenticated CLI commands. A direct client with secure credential storage can use `https://api.migma.ai/auth.md` (claim-code); omit `scope` and let the user approve access in the browser.
+- Local command-based MCP clients: use `@migma/mcp` with authentication configured by the user. Let the client manage its credentials; never read host secrets or copy credentials between clients.
 - Installing Migma into an existing app and wiring product-triggered sends: use `setup`.
 - Creating, editing, testing, sending, and exporting emails from an agent workflow: use `migma`.
 - "Copy for AI" prompts from Migma UI: follow the compact user request first, then use included context such as `emailId`, `conversationId`, sender, project, or Contacts API details to choose the right API/SDK/CLI path.
 
 ## Core Contracts
 
-- REST, SDK, CLI, Local MCP, server automation, and manual Remote MCP requests authenticate with `Authorization: Bearer $MIGMA_API_KEY`. Acquire that key with `migma login` or `auth.md`; CI uses a Settings key from its secret store. OAuth-capable hosted MCP clients acquire and send their bearer credential automatically.
+- Hosted MCP and CLI clients manage their own authenticated requests. For app REST/SDK integration or CI, ask the user to configure a dedicated `MIGMA_API_KEY` in the server secret store. Write code against that secret's name without retrieving its value. The app sends it in `Authorization: Bearer <api-key>`. Do not extract or reuse a plugin or CLI credential for app integration.
 - Keep Migma calls server-side. Never put API keys or send calls in frontend/browser code.
 - Resolve the brand/project first. If there are multiple plausible projects, ask the user before creating emails.
 - Generate with `POST /v1/projects/emails/generate`, then poll generation status.

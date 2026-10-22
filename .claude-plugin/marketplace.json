@@ -1,20 +1,14 @@
 {
   "name": "migma-plugins",
+  "description": "Official Migma skills for creating, managing, and sending email with AI agents.",
   "owner": {
     "name": "Migma",
     "email": "support@migma.ai"
-  },
-  "interface": {
-    "displayName": "Migma"
   },
   "plugins": [
     {
       "name": "migma",
       "source": "./",
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
       "category": "Productivity"
     }
   ]
