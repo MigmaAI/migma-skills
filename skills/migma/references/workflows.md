@@ -59,6 +59,8 @@ migma projects use <projectId>
 
 ## "Export this email to Klaviyo"
 
+Needs a paid plan.
+
 ```bash
 migma export klaviyo <conversationId> --json
 ```
