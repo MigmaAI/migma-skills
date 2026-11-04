@@ -84,7 +84,7 @@ Future emails for that same brand use saved design references by default unless 
 
 Pass `count` and specify each email in the prompt (numbered, with trigger, variables, and CTA). Status returns `result.emails[]` with `emailId`, `slot`, `subject`, `preheader`, `html`, `screenshotUrl`, `status`, and `sendOffsetDays` when timed. Store every `emailId`; edit/send each independently. Your app owns the timer for `sendOffsetDays`.
 
-Each generate or HTML import creates one conversation. Every email in that conversation is a **canvas slot** with its own public `emailId`. `appUrl` opens that slot on the canvas (`/chat?c={conversationId}` or `&slot=N`). Edit, send, and export use `emailId`. HTML is omitted unless you ask for `includeHtml`. Do not treat `conversationId` as one email when there are multiple slots.
+Each generate or HTML import creates one conversation. Every email in that conversation is a **canvas slot** with its own public `emailId`. `appUrl` opens that slot on the canvas (`/chat?c={conversationId}` or `&slot=N`). Edit and send use `emailId`; export uses `conversationId`. HTML is omitted unless you ask for `includeHtml`. Do not treat `conversationId` as one email when there are multiple slots.
 
 ## Live presence (REST / CLI only)
 
@@ -200,12 +200,13 @@ migma validate all --html ./email.html --json
 migma validate all --conversation <conversationId> --json
 
 migma export html <conversationId> --output ./email.html --json
+migma export png <conversationId> --output ./email.png --json
 migma export klaviyo <conversationId> --type html --json
 migma export mailchimp <conversationId> --json
 migma export hubspot <conversationId> --json
 ```
 
-CLI has no `export png`. For PNG, use MCP `migma_export_png`.
+Exports need a paid plan, from the CLI and from MCP. On a free plan they fail with a message saying so; `validate --conversation` still works.
 
 ## Choose the path
 
