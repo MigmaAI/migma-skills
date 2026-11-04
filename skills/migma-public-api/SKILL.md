@@ -41,6 +41,8 @@ Official sources:
 - `email:send` permits test/direct sends. `campaign:write` permits campaign creation, send, and schedule.
 - Use campaigns when the user needs a named marketing send with scheduling, recipient counts, status, and history.
 - Use direct send for transactional messages, one-off sends, and test flows.
+- A key needs send access to the brand by current membership, or `POST /v1/sending` and `POST /v1/send-approvals` answer 403.
+- After a person approves a schedule from `POST /v1/send-approvals`, changing that campaign or its email answers 409 `APPROVED_SEND_LOCKED`. Do not retry: have them change it on the campaign page in Migma, or cancel it and request approval for a new campaign. Keep polling `GET /v1/send-approvals/:id` past the send time, because `scheduled` can move to `failed` with `error`.
 - For contacts work, keep API keys server-side, use `projectId`, preserve consent/status fields, and import opted-in subscribed contacts.
 
 ## Email Setup Pattern
