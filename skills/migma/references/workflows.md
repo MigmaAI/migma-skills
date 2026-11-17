@@ -59,7 +59,7 @@ migma projects use <projectId>
 
 ## "Export this email to Klaviyo"
 
-Needs a paid plan.
+Needs a paid plan. When Klaviyo is connected to the brand in Migma, create the template in their account instead of downloading a file: the download keeps images on Migma, the push hosts them in Klaviyo. Use MCP `migma_push_to_klaviyo` or `POST /v1/export/klaviyo/{conversationId}/push` with an `Idempotency-Key` header, and give the user the returned `editorUrl`. Without a connection, or for a file:
 
 ```bash
 migma export klaviyo <conversationId> --json
