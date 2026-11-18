@@ -22,9 +22,9 @@ Use one write path per task. Before switching paths, finish or pause current wor
 
 1. Reuse existing `migma_*` tools.
 2. When a Migma plugin listing with browser OAuth is installed, complete that approval.
-3. Otherwise go straight to claim-code: fetch `https://api.migma.ai/auth.md`, register intent, and store the returned credential in Grok's secure credential storage. Grok Bot's cloud computer cannot receive an OAuth callback, so do not attempt connector OAuth first and do not retry it.
-4. Human opens the approval link, signs in if needed, reviews the permissions, and approves.
-5. Repeat `migma_list_projects` and confirm Grok reports a durable connected state. A connector badge that still says `needsAuth` after claim-code is expected; the read-only call is the proof, not the badge.
+3. If the connector needs authentication, complete its browser sign-in and access approval, then verify with `migma_get_context` or `migma_list_projects`.
+4. Use claim-code only when browser OAuth cannot complete and the agent can make direct HTTPS requests and securely store the returned credential: read `https://api.migma.ai/auth.md` and show the human approval link.
+5. Verify the chosen path with a read-only call. Claim-code authorizes direct API access; it does not repair a hosted connector that still reports `needsAuth`.
 
 The user sees one thing: the approval link with one line of instruction. Connection mechanics (which flow, what was rejected, what is being retried) are not the user's problem; report them only if the user asks or the connection fails for good.
 

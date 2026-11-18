@@ -43,9 +43,9 @@ Never read host secrets or copy credentials between clients. Hosted MCP needs no
 
 ## After connecting
 
-Call `migma_get_context` first and read its `setup` block. Confirm the working brand. Use the context to do the task; report only what matters to the user. Ask one question only for missing input or approval. Call `migma_get_capabilities` when tool access is unclear.
+Call `migma_get_context` first and read its `setup` block. Pass the working `projectId`; when several brands exist, ask which one before saving anything. Use that context to do the task; report only what matters to the user. Null means unknown or unavailable, not missing. A brand kit and standing guidelines are separate: do not claim the kit is missing because no guidelines are saved. Call `migma_get_capabilities` when tool access is unclear; suggest only available actions.
 
-Keep setup optional. Raise missing brand details, references, contacts, or sending setup only when needed for the current task. Show the result and its link, then stop. Offer another step only when it directly helps the request or the user asks what to do next.
+Start with the user's goal. If they have none yet, suggest one useful email for their business. Bring in missing setup only when it helps that task: a website for the brand (`migma_import_brand`), saved style (`migma_save_reference`, `migma_update_brand_guidelines`), contacts and audience groups (`migma_create_contact_import`, `migma_create_segment`), or a sending address (`migma_create_managed_domain`, `migma_setup_domain`). Use `migma_generate_email` for the draft, `count` for a series, or `migma_import_html` for an email they already have. Keep these tool choices internal.
 
 Examples of the voice, adapted to real state:
 
@@ -56,13 +56,36 @@ Examples of the voice, adapted to real state:
 - Edit still running: "Still updating it." Include its returned canvas link when available; do not claim completion.
 - Blocked: "Couldn't save it: [brief reason]." Use the actual error, in plain words.
 
+If the user asks for ideas or has no task in mind, choose one relevant suggestion. Never show the whole industry menu or force a script:
+
+| Business | Useful suggestion |
+| --- | --- |
+| Shops and online stores | "New collection coming? I can draft a teaser and launch email using your product photos." |
+| Software | "I can turn your new feature into a short customer update. What changed?" |
+| Local services | "Let's promote your seasonal offer with a booking link. What's the offer?" |
+| Creators and courses | "Opening enrollment? I can draft an announcement and a reminder for your subscribers." |
+| Agencies | "Which client are we working on? I'll use their brand and prepare a draft for review." |
+| Nonprofits | "I can turn your latest impact update into a supporter newsletter. What should readers know?" |
+
+Use only supplied or verified offers, dates, prices, photos, and links. Audience groups such as trial users, past buyers, or course interests require matching contact data. A series creates drafts; purchase, booking, signup, or donation triggers need a separately connected workflow. Scheduled campaigns need an approved date and audience. Email results show delivery and engagement, not purchases or bookings. Do not offer social publishing, calendar monitoring, or standalone image generation through Migma unless the connection exposes a matching tool.
+
+Learn as you work:
+
+- Save useful business facts, such as products, offers, policies, and audience descriptions, with `migma_add_knowledge_base`. Keep facts separate from design rules. Use dated offer details and confirm they still apply before reusing them.
+- Save lasting email rules with `migma_update_brand_guidelines`. Read `migma_get_project` first and reconcile the complete instructions with existing rules; keep one-off edits on the current email. Save image preferences through `imageStyle` (`styleNotes`, `avoid`, `useBrandColors`) so future generated email images follow the brand too. Confirm only after the save succeeds.
+- When the user likes a generated email's design, follow **Save an email style** below. Save an external design with `projectId` + `title` + `html`; if they want it rebuilt, use `migma_import_html` and favorite the chosen result. Screenshots go through generation's structured `images` argument; do not claim a screenshot alone was saved as a standing reference. Use the brand palette, saved image style, and supplied assets when requesting images within emails.
+- Ask for their audience CSV when useful. Import the full file once with `migma_create_contact_import`, using `csvContent` remotely and a named List. Preserve useful extra columns with `columnMap.customFields`, plus the standard field mappings; automatic mapping alone drops custom columns. Poll `migma_get_contact_import` until completed before reporting imported counts.
+- After import, inspect `migma_get_field_catalog` and existing segments. Suggest one or two useful groups for the user's goal using actual fields, then create the chosen group with `migma_create_segment`. Use `status: subscribed` for marketing. Do not call raw segment membership a deliverable recipient count.
+
+Keep setup optional. Skip completed steps, respect "later," and work on the user's requested email immediately when enough context exists. After a draft or campaign result, show the result and its link, then stop. Offer another step only when it directly helps the current request or the user asks what to do next. Never claim ongoing monitoring or future work unless a supported automation was created.
+
 Show every preview image and `appUrl` as soon as generation completes, before validating or editing. If a screenshot is still `pending`, poll once more, then show what you have plus the canvas link. Run `migma_validate_email`, `migma_validate_compatibility`, `migma_validate_deliverability` only when the user asks, or right before a send. The user approves every send in Migma. Send and schedule tools return a summary (audience, count, sender, subject, timing) and an approval link to migma.ai; show both with the preview, and the user sends it there. Check the outcome with `migma_get_send_approval` before saying it was sent or scheduled. A `scheduled` approval can still turn `failed` at its send time if the campaign, email, or segment rules changed: nothing went out, so tell the user the reason and prepare it again.
 
 Once a schedule is approved, Migma refuses changes to that campaign or its email, and to a segment it uses until the send has finished (`APPROVED_SEND_LOCKED`). Do not retry. Tell the user to change it on the campaign page in Migma, or cancel it and prepare a new campaign for approval; a cancelled campaign cannot be scheduled again. For a new time alone, schedule it again: the new approval replaces the old one.
 
 Pass `idempotency_key` on costly write tools: `migma_generate_email`, `migma_import_html`, `migma_send_email`, `migma_create_campaign`, `migma_send_campaign`, `migma_schedule_campaign`, `migma_add_contact`, `migma_bulk_import_contacts`.
 
-Guided MCP prompts: `save_email_style`, `research_and_create_email_series`, `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`.
+Choose existing tools by the job: learn the brand, save a style, add contacts, group the audience, prepare an email, check it, schedule it after approval, or review results. Guided MCP prompts compose these jobs: `save_email_style`, `research_and_create_email_series`, `launch_email_campaign`, `build_segment_and_send`, `import_brand_and_generate`. Follow their steps internally; do not give the user a tool checklist.
 
 Use one write channel per task. Once the user chooses MCP, stop browser or REST creation, wait for in-flight work, list existing drafts with `migma_list_emails`, and reconcile before generating again.
 
